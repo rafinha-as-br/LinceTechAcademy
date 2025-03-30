@@ -37,6 +37,4 @@ void main(){
         print("Nacionalidade não informada");
     }
 
-
-
 }
