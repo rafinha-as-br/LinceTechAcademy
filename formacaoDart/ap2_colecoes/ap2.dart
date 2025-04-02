@@ -7,7 +7,7 @@ void main(){
   //preenche essa lista e já salva na variável de controle para impressão
   String listaOriginal = "";
   for(int i=0; i<50; i++){
-    lista.add(Random().nextInt(100));
+    lista.add(Random().nextInt(15));
     listaOriginal += " ${lista[i].toString()};";
   }
 
