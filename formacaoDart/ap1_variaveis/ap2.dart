@@ -12,8 +12,7 @@ void main(){
   print("Informe os números para calcular a média: ");
   for(int i=0; i<4; i++){
     print("Número ${i+1}: ");
-    String? entry = stdin.readLineSync();
-    numeros[i] = int.parse(entry!);
+    numeros[i] = int.tryParse(stdin.readLineSync() ?? "") ?? 0;
     somaTotal += numeros[i];
 
   }
@@ -21,8 +20,5 @@ void main(){
   media = somaTotal/4;
 
   print("A média entre os números: [${numeros[0]}, ${numeros[1]}, ${numeros[2]}, ${numeros[3]}] é = $media");
-
-
-
 
 }
