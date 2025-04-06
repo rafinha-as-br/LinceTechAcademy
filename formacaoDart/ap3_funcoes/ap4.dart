@@ -31,9 +31,9 @@ String? converterDH(int numero){
   String numeroHexa = "";
   const hexChars = '0123456789ABCDEF';
 
-  while(numero>0){
-    numeroHexa += "${hexChars[numero%16]}";
-    numero = numero~/16;
+  while(numero>0) {
+    numeroHexa += "${hexChars[numero % 16]}";
+    numero = numero ~/ 16;
   }
   numeroHexa = numeroHexa.split('').reversed.join();
   return "Hexadecimal: $numeroHexa";
