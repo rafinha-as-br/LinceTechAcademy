@@ -1,6 +1,7 @@
 
 # Notas do Aluno
-
+Mais uma vez a IA mostra grandes resultados, onde, sem erros mostrou as diferenças entre
+os diferentes tipos de laços de repetição e de condicionais.
 
 
 # Controle de Fluxo e Laços de Repetição em Dart
