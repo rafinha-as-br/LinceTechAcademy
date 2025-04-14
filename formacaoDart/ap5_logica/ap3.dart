@@ -1,6 +1,6 @@
-//função que recebe um número e retorna a soma dos números pares até o número recebido
 
 import 'dart:math';
+//função que recebe um número e retorna a soma dos números pares até o número recebido
 
 int somaPares (int num1){
   int num01=1;
@@ -14,7 +14,6 @@ int somaPares (int num1){
 
   return somaPares;
 }
-
 
 void main(){
   int numeroAleatorio = Random().nextInt(1000 - 100 + 1);
