@@ -1,7 +1,6 @@
 # Notas do Aluno
-
-<!-- Adicione suas observações sobre este conteúdo -->
-
+Achei muito interessante o tópico sobre a organização de exceptions. 
+Onde é possível criar um arquivo "exceptions.dart" e colocar todas as exceptions dentro dela.
 # Erros, Exceções e Tratamento em Dart
 
 ---
@@ -190,3 +189,4 @@ try {
 List<int> lista = [1, 2, 3];
 print(lista[10]); // RangeError
 ```
+  
