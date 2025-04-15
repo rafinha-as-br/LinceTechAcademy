@@ -5,10 +5,7 @@ O conteúdo apresentado pela IA fora ótimo, porém, pedi mais um tópico sobre 
 tópico fora citado em uma das questões do quiz #1 de orientação a objetos e acredito que deveria estar incluído dentro 
 dos tópicos desta interação IA.
 
-
 # Orientação a Objetos em Dart
-
----
 
 ## Quais são os principais conceitos da orientação a objetos?
 
