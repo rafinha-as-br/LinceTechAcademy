@@ -5,7 +5,6 @@ class contaBancaria{
   late int saldo;
   late String? titular;
 
-
   contaBancaria({this.saldo = 100, required this.titular});
 
   //metodo para depositar
