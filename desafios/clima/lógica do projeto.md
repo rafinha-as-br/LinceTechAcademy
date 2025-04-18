@@ -1,8 +1,12 @@
 
 - esquema principal => menu principal com as opções (fazer um loop while)
-- Os arquivos das leituras são obtidos e colocados em mapas 
-  - mapa Leitura estados (onde as keys são os estados e o conteúdo é outro mapa)
-    - Mapa leitura mes a mês (onde as keys são os meses);
+- Os arquivos das leituras são obtidos e colocados em mapas => colocar tudo isso dentro de outro arquivo 
+  - mapa Leitura mês (onde as keys são os meses e o conteúdo é outro mapa)
+    - Mapa leitura dias (onde as keys são os dias e o conteúdo é uma lista com os dados);
+
+
+
+
 
 AS INFORMAÇÕES NECESSÁRIAS PARA O RELATÓRIO SÃO:
 • TEMPERATURA:
