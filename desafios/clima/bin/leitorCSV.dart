@@ -1,92 +1,91 @@
 import 'dart:convert';
 import 'dart:io';
 
-
-
-void main(){
 //diretório da pasta de cada estado
-  final pastaSC = Directory('arquivosCSV/SC');
-  final pastaSP = Directory('arquivosCSV/SP');
+final pastaSC = Directory('arquivosCSV/SC');
+final pastaSP = Directory('arquivosCSV/SP');
 
 
-// esturura de mapa
-  final Map<String, Map<int, Map<int, List<Map<String, dynamic>>>>> dadosClimaticos = {
-    'SC': {},
-    'SP': {},
-  };
 
+// função que vai retornar uma lista com todos os dados
+Map <int, Map<int, Map<int, List<String>>> >? processarDados(Directory pasta){
+  // estururas de mapa
+  final mapaMeses = <int, Map<int, Map<int, List<String>>> > {};
+  final mapaDias =  <int, Map<int, List<String>>> {};
+  final mapaHoras = <int, List<String>>{};
 
-//função processarDados => recebe o diretório da pasta dos arquivos de determinado estado
+  //criando variáveis necessárias
+  List <FileSystemEntity> arquivosCSV = [];
+  //pegando os arquivos .csv do diretório passado
+  pasta.existsSync() ? arquivosCSV = pasta.listSync().where((element) => element is File && element.path.endsWith('.csv')).toList() : throw Exception("Não foi possível obter os arquivos!");
 
-  //if que vê qual estado foi passado{
-    // um for que processa CADA arquivo da pasta (processa cada mês){
+  for (final arquivo in arquivosCSV){
+    final values = arquivo as File;
+    final linhas = values.readAsLinesSync(encoding: latin1);
+    final dados = linhas.skip(1);
 
-      // pegar arquivo .csv da pasta daquele estado
-      // ler arquivo e armazenar em uma lista
+    for (var linha in dados) {
+      final partes = linha.split(',');
+      final dia = int.parse(partes[1]);
+      final hora = int.parse(partes[2]);
 
-      // um for que processará cada dia{
-        // um for que processará cada hora{
-          // pega os dados de cada hora e coloca em um mapa de horas do dia processado
-          // pega o mapa de horas e coloca dentro do mapa do dia
-        //}
-
-      // }
-
-      // pega o mapa do dia e joga no mapa do mês
-    // }
-  //}
-
-
-  // função que vai retornar uma lista com todos os dados
-  void processarDados(Directory pasta){
-    //criando variáveis necessárias
-    List <FileSystemEntity> arquivosCSV = [];
-    //pegando os arquivos .csv do diretório passado
-    pasta.existsSync() ? arquivosCSV = pasta.listSync().where((element) => element is File && element.path.endsWith('.csv')).toList() : throw Exception("Não foi possível obter os arquivos!");
-
-
-    //processar Dados SC
-    if(pasta == "SC"){
-      //passando por cada mês (cada arquivo)
-      for(int i=0; i<arquivosCSV.length; i++){
-        //passando por cada arquivo e armazenando o conteúdo em uma lista
-        final arquivoFile = arquivosCSV[i] as File;
-        List<String> arquivo = arquivoFile.readAsLinesSync();
-
-        //processando os dias através dos arquivos
-
-      }
-
-
+      // adiciona a hora ao mapa do dia
+      mapaDias.putIfAbsent(dia, () => {});
+      mapaDias[dia]![hora] = partes;
     }
 
+    // extrair mês do nome do arquivo
+    final nomeArquivo = arquivo.uri.pathSegments.last;
+    final partesNome = nomeArquivo.split('_');
+    final mes = int.parse(partesNome[2].split('.').first);
 
+    mapaMeses[mes] = mapaDias;
 
 
 
   }
 
-
-//função obter dados => recebe um arquivo CSV e retorna uma lista de String das informações
+  return mapaMeses;
+}
 
 
 /*
-//função que obtém o os conteúdos CSV
-  List<String> obterDados(){
-    //verifica se a pasta está funcionando, se estiver, obter todo arquivo ".csv"
-    pasta.existsSync() ? arquivosCSV = pasta.listSync().where((element) => element is File && element.path.endsWith('.csv')).toList() : throw Exception("Não foi possível obter os arquivos!");
-    List <String> conteudoCSV;
-    //lendo os arquivos .csv
-    try{
-      arquivosCSV.forEach((arquivo) {
-        conteudoCSV = (File(arquivo.path).readAsLinesSync());
-      });
-    } catch (e){
-      throw e;
+  //passando por cada mês (cada arquivo)
+  for(int i=0; i<arquivosCSV.length; i++){
+    //passando por cada arquivo e armazenando o conteúdo em uma lista
+    final arquivoFile = arquivosCSV[i] as File;
+    List<String> arquivo = arquivoFile.readAsLinesSync(encoding: latin1);
+    final dados = arquivo.skip(1);
+    //processando os dias através dos arquivos
+
+
+    int j=1;
+    while(j!= arquivo.skip(1).map((linha)=> linha.split(',')[1]).toSet().length){
+
+      //processando as horas
+      for(int h=1; h<24; h++){
+        String info = arquivo[j].toString();
+        List <String> infoList = info.split(',');
+
+        //adicionando dados ao mapa das horas
+        mapaHoras.putIfAbsent(h, () =>  infoList);
+        j++;
+      }
+
+      //adicionando horas ao mapa do dia
+      mapaDias.putIfAbsent(j, ()=> mapaHoras);
+
     }
 
-    //retorna o conteúdo CSV
-    return conteudoCSV;
+    //adicionando mapa dias ao mapa mes
+    mapaMeses.putIfAbsent(i, ()=> mapaDias);
+
   }
 */
+
+
+void main(){
+  var SC = processarDados(pastaSC);
+  print(SC);
+
 }

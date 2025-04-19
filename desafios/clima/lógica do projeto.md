@@ -15,7 +15,7 @@
 
       // ler arquivo e armazenar em uma lista
 
-      // um for que processará cada dia{
+      // um while que processará cada dia{
         // um for que processará cada hora{
           // pega os dados de cada hora e coloca em um mapa de horas do dia processado
           // pega o mapa de horas e coloca dentro do mapa do dia
