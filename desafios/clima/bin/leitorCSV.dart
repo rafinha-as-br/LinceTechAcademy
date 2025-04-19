@@ -66,8 +66,3 @@ Future<List<Dados >> lerArquivos(Directory dir) async{
   return registros;
 
 }
-
-
-void main(){
-  
-}
