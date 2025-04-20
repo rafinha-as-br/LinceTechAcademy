@@ -1,6 +1,22 @@
 import 'dart:io';
-
+import 'dart:math';
+import 'package:ansi/ansi.dart';
 import 'leitorCSV.dart';
+
+//classes de tipos de temperaturas
+class ConversorTemperatura {
+  static double celsiusParaFahrenheit(double celsius) => (celsius * 9/5) + 32;
+  static double celsiusParaKelvin(double celsius) => celsius + 273.15;
+}
+//classes de tipos de direções
+class ConversorAngulo {
+  static double grausParaRadianos(double graus) => graus * (pi / 180);
+  static double radianosParaGraus(double radianos) => radianos * (180 / pi);
+}
+
+
+
+
 
 //função de gerar relatório
 Future<void> criarRelatorio(int opc, Directory dir) async{
@@ -33,9 +49,10 @@ Future<void> criarRelatorio(int opc, Directory dir) async{
       double tempMax = dadoEstado.map((d)=> d.temperatura).reduce((a,b) => a>b ? a:b);
       double tempMin = dadoEstado.map((d)=> d.temperatura).reduce((a,b) => a<b ? a:b);
 
-      print("Média anual: ${mediaTemp.toStringAsFixed(2)}Cº");
-      print("Máxima do ano: ${tempMax.toStringAsFixed(2)}Cº");
-      print("Mínima do ano: ${tempMin.toStringAsFixed(2)}Cº");
+      //imprimindo os valores
+      print("Média anual: ${red(mediaTemp.toStringAsFixed(2) + "Cº" )} " + "|" + " ${yellow(ConversorTemperatura.celsiusParaFahrenheit(mediaTemp).toStringAsFixed(2) + "Fº")} " + "|" + " ${blue(ConversorTemperatura.celsiusParaKelvin(mediaTemp).toStringAsFixed(2) + "K")} ");
+      print("Máxima do ano: ${red(tempMax.toStringAsFixed(2) + "C")} " + "|" + " ${yellow(ConversorTemperatura.celsiusParaFahrenheit(tempMax).toStringAsFixed(2) + "Fº")} " + "|" + " ${blue(ConversorTemperatura.celsiusParaKelvin(tempMax).toStringAsFixed(2) + "K")}");
+      print("Mínima do ano: ${red(tempMin.toStringAsFixed(2) + "C")} " + "|" + " ${yellow(ConversorTemperatura.celsiusParaFahrenheit(tempMin).toStringAsFixed(2) + "Fº")} " + "|" + " ${blue(ConversorTemperatura.celsiusParaKelvin(tempMin).toStringAsFixed(2) + "K")}");
 
       //pegando os valores mensais
       print("\n\nMédias dos meses de $estado:");
@@ -47,7 +64,7 @@ Future<void> criarRelatorio(int opc, Directory dir) async{
 
       Mes.forEach((mes, lista){
         double media = lista.fold(0.0, (total,d) => total + d.temperatura)/lista.length;
-        print(" - Mês $mes: ${media.toStringAsFixed(2)}Cº");
+        print(" - Mês $mes: ${red(media.toStringAsFixed(2) + "Cº")} " + "|" + " ${yellow(ConversorTemperatura.celsiusParaFahrenheit(media).toStringAsFixed(2)+ "Fº")}" + "|" + " ${blue(ConversorTemperatura.celsiusParaKelvin(media).toStringAsFixed(2) + "K")}");
       });
 
       //relatório umidade
@@ -58,21 +75,37 @@ Future<void> criarRelatorio(int opc, Directory dir) async{
       double umidadeMax = dadoEstado.map((d)=> d.umidade).reduce((a,b)=> a>b ? a:b);
       double umidadeMin = dadoEstado.map((d)=> d.umidade).reduce((a,b)=> a<b ? a:b);
 
-      print("Umidade média anual: ${mediaUmid.toStringAsFixed(2)}%");
-      print("Umidade máxima anual: ${umidadeMax.toStringAsFixed(2)}%");
-      print("Umidade mínima anual: ${umidadeMin.toStringAsFixed(2)}%");
+      print("Umidade média anual: ${green(mediaUmid.toStringAsFixed(2) + "%")}");
+      print("Umidade máxima anual: ${red(umidadeMax.toStringAsFixed(2)+ "%")}");
+      print("Umidade mínima anual: ${blue(umidadeMin.toStringAsFixed(2)) + "%"}");
 
       //relatório vento
     } else if(opc==3){
       print("Relatório vento $estado");
-      Map<double, int> freqDir = {};
-      for(var d in dadoEstado){
-        freqDir[d.dirVento] = (freqDir[d.dirVento]?? 0 ) +1;
 
-
+      // Direção mais frequente no ano todo
+      Map<double, int> freqAnual = {};
+      for (var d in dadoEstado) {
+        freqAnual[d.dirVento] = (freqAnual[d.dirVento] ?? 0) + 1;
       }
-      var maiorFrequente = freqDir.entries.reduce((a,b)=> a.value > b.value ? a:b);
-      print("Direção de vento mais frequente: ${maiorFrequente.key}º");
+      var dirMaisFreqAno = freqAnual.entries.reduce((a, b) => a.value > b.value ? a : b);
+      print("Direção de vento mais frequente no ano: ${blue("${dirMaisFreqAno.key}º")}");
+
+      // Direção mais frequente por mês
+      print("\nDireção de vento mais frequente por mês:");
+      var porMes = <int, List<Dados>>{};
+      for (var d in dadoEstado) {
+        porMes.putIfAbsent(d.dataHora.month, () => []).add(d);
+      }
+
+      porMes.forEach((mes, lista) {
+        Map<double, int> freqMes = {};
+        for (var d in lista) {
+          freqMes[d.dirVento] = (freqMes[d.dirVento] ?? 0) + 1;
+        }
+        var dirMaisFreqMes = freqMes.entries.reduce((a, b) => a.value > b.value ? a : b);
+        print(" - Mês $mes: ${yellow(dirMaisFreqMes.key.toString()) + "º"} | ${yellow(ConversorAngulo.grausParaRadianos(dirMaisFreqMes.key).toStringAsFixed(2))  + " Rad"} (${dirMaisFreqMes.value} ocorrências) ");
+      });
     }
 
 

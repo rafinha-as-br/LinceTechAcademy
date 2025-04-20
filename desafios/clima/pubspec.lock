@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.4.1"
+  ansi:
+    dependency: "direct main"
+    description:
+      name: ansi
+      sha256: "070af96189f9da6f996cee46049682bdcd1d191b483e13f9d2a2600729d8b2a1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.2"
   args:
     dependency: transitive
     description:
