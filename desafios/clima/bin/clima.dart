@@ -2,6 +2,7 @@ import 'dart:io';
 import 'gerarRelatorio.dart';
 
 void main() async{
+  //menu principal
   print("Olá Leandro! Que relatório você precisa?");
   print("1 - Temperatura");
   print("2 - Umidade");

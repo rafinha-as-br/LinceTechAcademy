@@ -39,28 +39,53 @@ Future<void> criarRelatorio(int opc, Directory dir) async {
 
   for (var estado in estados.keys) {
     var dadoEstado = estados[estado]!;
+    var Mes = <int, List<Dados>>{};
 
     print("\nEstado: $estado");
     // relatório temperatura
     if (opc == 1) {
       print("Relatório temperaturas $estado");
 
+      //criando variáveis
       double somaTemp = dadoEstado.fold(0.0, (total, d) => total + d.temperatura);
       double mediaTemp = somaTemp / dadoEstado.length;
       double tempMax = dadoEstado.map((d) => d.temperatura).reduce((a, b) => a > b ? a : b);
       double tempMin = dadoEstado.map((d) => d.temperatura).reduce((a, b) => a < b ? a : b);
+      var mesesOrdenados = Mes.keys.toList()..sort();
 
+      //exibir média, máx e min do ano
       print("Média anual: ${vermelho(mediaTemp.toStringAsFixed(2) + "Cº")} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(mediaTemp).toStringAsFixed(2) + "Fº")} | ${azul(ConversorTemperatura.celsiusParaKelvin(mediaTemp).toStringAsFixed(2) + "K")}");
       print("Máxima do ano: ${vermelho(tempMax.toStringAsFixed(2) + "C")} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(tempMax).toStringAsFixed(2) + "Fº")} | ${azul(ConversorTemperatura.celsiusParaKelvin(tempMax).toStringAsFixed(2) + "K")}");
       print("Mínima do ano: ${vermelho(tempMin.toStringAsFixed(2) + "C")} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(tempMin).toStringAsFixed(2) + "Fº")} | ${azul(ConversorTemperatura.celsiusParaKelvin(tempMin).toStringAsFixed(2) + "K")}");
 
+      //temp mínima e máxima por mês
+      print("\nMáximas e mínimas dos meses:");
+      for (var mes in mesesOrdenados) {
+        var lista = Mes[mes]!;
+        double maxMes = lista.map((d) => d.temperatura).reduce(max);
+        double minMes = lista.map((d) => d.temperatura).reduce(min);
+        print(" - Mês $mes | Máx: ${vermelho(maxMes.toStringAsFixed(2) + "C")} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(maxMes).toStringAsFixed(2) + "F")} | ${azul(ConversorTemperatura.celsiusParaKelvin(maxMes).toStringAsFixed(2) + "K")} | Mín: ${vermelho(minMes.toStringAsFixed(2) + "C")} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(minMes).toStringAsFixed(2) + "F")} | ${azul(ConversorTemperatura.celsiusParaKelvin(minMes).toStringAsFixed(2) + "K")}");
+      }
+
+      //exibir temp média por hora
+      print("\nTemperatura média por horário:");
+      var porHora = <int, List<Dados>>{};
+      for (var d in dadoEstado) {
+        porHora.putIfAbsent(d.dataHora.hour, () => []).add(d);
+      }
+      var horas = porHora.keys.toList()..sort();
+      for (var h in horas) {
+        var lista = porHora[h]!;
+        double mediaHora = lista.fold(0.0, (total, d) => total + d.temperatura) / lista.length;
+        print(" - ${h.toString().padLeft(2, '0')}:00 => ${vermelho(mediaHora.toStringAsFixed(2) + "C")} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(mediaHora).toStringAsFixed(2) + "F")} | ${azul(ConversorTemperatura.celsiusParaKelvin(mediaHora).toStringAsFixed(2) + "K")}");
+      }
+
+      //exibir temp medias mensais
       print("\n\nMédias dos meses de $estado:");
-      var Mes = <int, List<Dados>>{};
       for (var dado in dadoEstado) {
         Mes.putIfAbsent(dado.dataHora.month, () => []).add(dado);
       }
 
-      var mesesOrdenados = Mes.keys.toList()..sort();
       for (var mes in mesesOrdenados) {
         var lista = Mes[mes]!;
         double media = lista.fold(0.0, (total, d) => total + d.temperatura) / lista.length;
@@ -80,7 +105,20 @@ Future<void> criarRelatorio(int opc, Directory dir) async {
       print("Umidade máxima anual: ${vermelho((umidadeMax * 100).toStringAsFixed(2) + "%")}");
       print("Umidade mínima anual: ${azul((umidadeMin * 100).toStringAsFixed(2) + "%")}");
 
+      print("\nMáximas e mínimas dos meses:");
+      var Mes = <int, List<Dados>>{};
+      for (var dado in dadoEstado) {
+        Mes.putIfAbsent(dado.dataHora.month, () => []).add(dado);
+      }
+      var mesesOrdenados = Mes.keys.toList()..sort();
+      for (var mes in mesesOrdenados) {
+        var lista = Mes[mes]!;
+        double maxMes = lista.map((d) => d.umidade).reduce(max);
+        double minMes = lista.map((d) => d.umidade).reduce(min);
+        print(" - Mês $mes | Máx: ${vermelho((maxMes * 100).toStringAsFixed(2) + "%")} | Mín: ${azul((minMes * 100).toStringAsFixed(2) + "%")}");
+      }
 
+      //relatório vento
     } else if (opc == 3) {
       print("Relatório vento $estado");
 
@@ -89,7 +127,7 @@ Future<void> criarRelatorio(int opc, Directory dir) async {
         freqAnual[d.dirVento] = (freqAnual[d.dirVento] ?? 0) + 1;
       }
       var dirMaisFreqAno = freqAnual.entries.reduce((a, b) => a.value > b.value ? a : b);
-      print("Direção de vento mais frequente no ano: ${azul("${dirMaisFreqAno.key}º")}");
+      print("Direção de vento mais frequente no ano: ${amarelo("${dirMaisFreqAno.key}º" + "|" + "${ConversorAngulo.grausParaRadianos(dirMaisFreqAno.key).toStringAsFixed(2)}")}");
 
       print("\nDireção de vento mais frequente por mês:");
       var porMes = <int, List<Dados>>{};
@@ -97,6 +135,7 @@ Future<void> criarRelatorio(int opc, Directory dir) async {
         porMes.putIfAbsent(d.dataHora.month, () => []).add(d);
       }
 
+      //imprimir meses ordenados
       var mesesOrdenados = porMes.keys.toList()..sort();
       for (var mes in mesesOrdenados) {
         var lista = porMes[mes]!;
