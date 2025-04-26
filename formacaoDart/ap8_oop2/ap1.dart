@@ -18,11 +18,10 @@ void main(){
   int numeroAleatorio = Random().nextInt(6);
   List<Enum> listaDeGeneros = [];
 
-  for(int i=0; i<6; i++){
-    listaDeGeneros.addAll(GenerosMusicais.values);
-  }
 
-  print("Meu gênero musical preferido é: ${listaDeGeneros[numeroAleatorio]}");
+    listaDeGeneros.addAll(GenerosMusicais.values);
+
+  print("Meu gênero musical preferido é: ${listaDeGeneros[numeroAleatorio].name}");
 
 
 }
