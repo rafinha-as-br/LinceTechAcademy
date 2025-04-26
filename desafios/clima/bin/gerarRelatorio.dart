@@ -9,6 +9,13 @@ String amarelo(String texto) => '\x1B[33m$texto\x1B[0m';
 String azul(String texto) => '\x1B[34m$texto\x1B[0m';
 String verde(String texto) => '\x1B[32m$texto\x1B[0m';
 
+extension color on String {
+  String vermelho() => '\x1B[31m$this\x1B[0m';
+  String amarelo() => '\x1B[33m$this\x1B[0m';
+  String azul() => '\x1B[34m$this\x1B[0m';
+  String verde() => '\x1B[32m$this\x1B[0m';
+
+}
 
 // classes de tipos de temperaturas
 class ConversorTemperatura {
@@ -21,7 +28,6 @@ class ConversorAngulo {
   static double grausParaRadianos(double graus) => graus * (pi / 180);
   static double radianosParaGraus(double radianos) => radianos * (180 / pi);
 }
-
 // função de gerar relatório
 Future<void> criarRelatorio(int opc, Directory dir) async {
   List<Dados> registros = await lerArquivos(dir);
@@ -53,8 +59,11 @@ Future<void> criarRelatorio(int opc, Directory dir) async {
       double tempMin = dadoEstado.map((d) => d.temperatura).reduce((a, b) => a < b ? a : b);
       var mesesOrdenados = Mes.keys.toList()..sort();
 
+      final med = mediaTemp.toStringAsFixed(2);
+      med.vermelho();
+
       //exibir média, máx e min do ano
-      print("Média anual: ${vermelho(mediaTemp.toStringAsFixed(2) + "Cº")} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(mediaTemp).toStringAsFixed(2) + "Fº")} | ${azul(ConversorTemperatura.celsiusParaKelvin(mediaTemp).toStringAsFixed(2) + "K")}");
+      print("Média anual: ${mediaTemp.toStringAsFixed(2).vermelho()} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(mediaTemp).toStringAsFixed(2) + "Fº")} | ${azul(ConversorTemperatura.celsiusParaKelvin(mediaTemp).toStringAsFixed(2) + "K")}");
       print("Máxima do ano: ${vermelho(tempMax.toStringAsFixed(2) + "C")} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(tempMax).toStringAsFixed(2) + "Fº")} | ${azul(ConversorTemperatura.celsiusParaKelvin(tempMax).toStringAsFixed(2) + "K")}");
       print("Mínima do ano: ${vermelho(tempMin.toStringAsFixed(2) + "C")} | ${amarelo(ConversorTemperatura.celsiusParaFahrenheit(tempMin).toStringAsFixed(2) + "Fº")} | ${azul(ConversorTemperatura.celsiusParaKelvin(tempMin).toStringAsFixed(2) + "K")}");
 
