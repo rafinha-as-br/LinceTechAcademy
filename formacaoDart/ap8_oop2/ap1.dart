@@ -1,8 +1,6 @@
 import 'dart:math';
 
 //enum com gêneros musicais
-import 'dart:math';
-
 enum GenerosMusicais{
   sertanejo,
   rock,
@@ -16,11 +14,10 @@ void main(){
 
   //Randomizador de generos musicais
   int numeroAleatorio = Random().nextInt(6);
+
+  //lista que recebe os generos musicais
   List<Enum> listaDeGeneros = [];
-
-
-    listaDeGeneros.addAll(GenerosMusicais.values);
-
+  listaDeGeneros.addAll(GenerosMusicais.values);
   print("Meu gênero musical preferido é: ${listaDeGeneros[numeroAleatorio].name}");
 
 
