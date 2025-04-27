@@ -21,7 +21,9 @@ class Gato extends Animal{
 }
 
 void main(){
+  //instanciando a classe concreta
   Gato gato1 = new Gato();
+  //chamando os métodos
   gato1.beber();
   gato1.comer();
   gato1.miar();
