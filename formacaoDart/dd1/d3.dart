@@ -9,12 +9,14 @@ Consoantes encontradas : incrementador no else do switch case
 
 //metodo para calcular vogais e consoantes
 List<String> calcularVE(String paragrafo){
-  //pegando a string sem espacos
+  //pegando a string sem espacos e retirando a pontuação
   String paragrafoSemEspaco = paragrafo.replaceAll(' ', '');
+  paragrafoSemEspaco = paragrafoSemEspaco.replaceAll('.', '');
+  paragrafoSemEspaco = paragrafoSemEspaco.replaceAll(',', '');
 
   int vogais=0;
 
-  List<String> consoantesVogaisStrings = ['', ''];
+  List<String> consoantesVogaisStrings = ['',''];
 
   //percorrendo a string sem espaco
   for(int i=0; i<paragrafoSemEspaco.length; i++){
@@ -65,7 +67,9 @@ void main(){
   print("Número de vogais: $totalVogais");
   
   //Consoantes encontradas:
-  List<String> consoantesEncontradas = listasVCstring[1].split(',');
-  consoantesEncontradas.forEach((e)=> print(e));
+  List<String> consoantesEncontradasList = listasVCstring[1].split(',');
+  //colocando dentro de uma string para facilitar a impressão
+  String consoantesAchadas = consoantesEncontradasList.toSet().toString();
+  print("Consoantes encontradas: $consoantesAchadas");
 
 }
