@@ -6,6 +6,9 @@
       <excludeFolder url="file://$MODULE_DIR$/desafios/termo/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/termo/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/termo/build" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/clima/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/clima/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/clima/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

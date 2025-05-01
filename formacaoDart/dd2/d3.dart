@@ -17,12 +17,13 @@ class Musica {
 }
 //função imprimir toda a biblioteca música
 void imprimirBiblioteca(){
-  print("\nImprimindo toda a biblioteca: ");
+  print("\n***Imprimindo toda a biblioteca: *** \n");
   for(int i=0; i<listaMusicas.length; i++){
     print("Nome da música: ${listaMusicas[i]._tituloMusica}");
     print("Artista: ${listaMusicas[i]._nomeArtista}");
     print("Álbum: ${listaMusicas[i]._nomeDoAlbum}");
     print("Duração: ${listaMusicas[i]._duracao}");
+    print("\n");
   }
 }
 
@@ -41,6 +42,26 @@ void procurarMusica(){
       }
     }
   }
+
+  print("\nProcurando...\n");
+  bool encontrado = listaMusicas.any((musica) => musica._tituloMusica.toLowerCase().contains(info.toLowerCase()) || musica._nomeArtista.toLowerCase().contains(info.toLowerCase()) || musica._nomeDoAlbum.toLowerCase().contains(info.toLowerCase()));
+  if(encontrado){
+    print("Encontramos músicas!!\n");
+    for(int i=0; i<listaMusicas.length; i++){
+      if(listaMusicas[i]._tituloMusica.toString().toLowerCase().contains(info.toLowerCase()) || listaMusicas[i]._nomeArtista.toString().toLowerCase().contains(info.toLowerCase()) || listaMusicas[i]._nomeDoAlbum.toString().toLowerCase().contains(info.toLowerCase())){
+        print("Nome da música: ${listaMusicas[i]._tituloMusica}");
+        print("Artista: ${listaMusicas[i]._nomeArtista}");
+        print("Álbum: ${listaMusicas[i]._nomeDoAlbum}");
+        print("Duração: ${listaMusicas[i]._duracao}");
+        print("\n");
+      }
+    }
+  } else{
+    print("Não foi encontrado nenhuma música, artista ou álbum com esse nome...\n");
+  }
+  
+
+
 
 }
 
