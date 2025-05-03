@@ -33,6 +33,7 @@ void procurarMusica(){
   print("\nProcurar uma música...");
   print("Informe o nome da música, artista ou o álbum!");
   String info = stdin.readLineSync()?? "";
+  //validador de entradas
   if(info.length < 3){
     while (i!=1){
       print("Você precisa informar pelo menos 3 caracteres na pesquisa, tente novamente!");
@@ -44,6 +45,7 @@ void procurarMusica(){
   }
 
   print("\nProcurando...\n");
+  //parte de buscar os valores
   bool encontrado = listaMusicas.any((musica) => musica._tituloMusica.toLowerCase().contains(info.toLowerCase()) || musica._nomeArtista.toLowerCase().contains(info.toLowerCase()) || musica._nomeDoAlbum.toLowerCase().contains(info.toLowerCase()));
   if(encontrado){
     print("Encontramos músicas!!\n");
@@ -60,9 +62,6 @@ void procurarMusica(){
     print("Não foi encontrado nenhuma música, artista ou álbum com esse nome...\n");
   }
   
-
-
-
 }
 
 //lista com instâncias da classe música (representa a biblioteca de músicas)
