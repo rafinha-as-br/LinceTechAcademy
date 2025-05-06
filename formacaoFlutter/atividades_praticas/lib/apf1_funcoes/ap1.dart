@@ -10,15 +10,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-  void mudarCor(){
-
-    setState(() {
-
-    });
-  }
-
-
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
