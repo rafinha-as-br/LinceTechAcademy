@@ -1,13 +1,29 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para trabalhar com JSON
 
+class Title{
+  String? titulo;
+
+  Title(this.titulo);
+
+  @override
+  String toString() {
+    return 'Title{titulo: $titulo}';
+  }
+}
+
+
+
 void main() async{
   var url1 = Uri.parse('https://jsonplaceholder.typicode.com/posts/1');
   var resposta = await http.get(url1);
 
+  List <Title> titulos = [];
+
   if(resposta.statusCode==200){
     var dados = jsonDecode(resposta.body);
-    print('Título: ${dados['title']}');
+    titulos.add(Title(dados['title']));
+    titulos.forEach(print);
   } else{
     print("Erro ${resposta.statusCode}");
   }

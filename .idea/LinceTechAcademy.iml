@@ -15,6 +15,9 @@
       <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app/build" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/requisicoes_treino/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/requisicoes_treino/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/requisicoes_treino/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
