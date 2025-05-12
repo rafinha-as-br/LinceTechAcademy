@@ -18,12 +18,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-enum estadoJogo{
-  andamento,
-  ganhou,
-  perdeu
-}
-
+// *** 1. Enumerador para cada situação do jogo ***
+enum estadoJogo { andamento, ganhou, perdeu }
 
 class MyWidget extends StatefulWidget {
   @override
@@ -37,15 +33,14 @@ class _MyWidgetState extends State<MyWidget> {
 
   var botaoCorreto = 0;
   var clicks = 0;
-  var ganhou = false;
-  var perdeu = false;
+  int vitorias = 0;
+  int derrotas = 0;
 
   void resetarJogo() {
     setState(() {
-      ganhou = false;
-      perdeu = false;
       clicks = 0;
       botaoCorreto = random.nextInt(3);
+      estado = estadoJogo.andamento;
     });
   }
 
@@ -65,68 +60,55 @@ class _MyWidgetState extends State<MyWidget> {
       // Verificar se a opção escolhida esta correta
       if (opcao == botaoCorreto) {
         estado = estadoJogo.ganhou;
+        vitorias++;
       } else {
         // Se estiver errada, incrementa o contador de clicks
         clicks++;
       }
 
       // Se a quantidade de clicks for maior ou igual a 2, o usuário perdeu
-      if (clicks >= 2 && !ganhou) {
-        perdeu = true;
+      if (clicks >= 2 && estado != estadoJogo.ganhou) {
+        estado = estadoJogo.perdeu;
+        derrotas++;
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return switch(estado){
-      estadoJogo.ganhou =>
-
+    // *** 3. Switch case com o enum ***
+    return switch (estado) {
+      estadoJogo.ganhou => Vitoria(resetarJogo),
+      estadoJogo.perdeu => Derrota(resetarJogo),
+      estadoJogo.andamento => Andamento(tentativa, vitorias, derrotas),
     };
+  }
+}
 
+// *** 2. Widget para cada situação de jogo ***
 
+// widget para jogo em andamento
+class Andamento extends StatelessWidget {
+  const Andamento(this.tentativa, this.vitorias, this.derrotas);
 
-    /* Se o usuário ganhou, retorna a mensagem de sucesso com o fundo em verde
-    if (ganhou) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(color: Colors.green, child: const Text('Você ganhou', style: TextStyle(fontSize: 20),)),
-          ElevatedButton(
-            onPressed: () => resetarJogo(),
-            child: const Text('Resetar', style: TextStyle(fontSize: 20)),
-          ),
-        ],
-      );
-    }
+  final int vitorias;
+  final int derrotas;
+  final void Function(int) tentativa;
 
-    // Se o usuário perdeu, retorna a mensagem de fracasso com o fundo em vermelho
-    if (perdeu) {
-      return Container(
-        color: Colors.red,
-        width: 500,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Você perdeu', style: TextStyle(fontSize: 30)),
-            // ******* 4. botão de resetar
-            ElevatedButton(
-              onPressed: () => resetarJogo(),
-              child: const Text('Resetar', style: TextStyle(fontSize: 20)),
-            ),
-          ],
-        ),
-      );
-    }
-
-
-     */
-
-    /* Nesse momento o jogo ainda nao foi finalizado
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        // *** 5. Contador de vitórias e derrotas ***
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text('Vitórias: $vitorias', style: TextStyle(fontSize: 30)),
+            Text("Derrotas: $derrotas", style: TextStyle(fontSize: 30)),
+          ],
+        ),
+        SizedBox(height: 30,),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -161,57 +143,27 @@ class _MyWidgetState extends State<MyWidget> {
         ),
       ],
     );
-    */
-
   }
 }
 
+//widget para Vitoria
+class Vitoria extends StatelessWidget {
+  const Vitoria(this.resetarJogo);
 
-// *** Widget para cada situação de jogo ***
-
-// widget para jogo em andamento
-class Andamento extends StatelessWidget {
-  const Andamento(this.tentativa);
-
-  final void Function(int) tentativa;
-
+  final void Function() resetarJogo;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-              ),
-              child: const Text('A'),
-              onPressed: () {
-                tentativa(0);
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-              ),
-              child: const Text('B'),
-              onPressed: () {
-                tentativa(1);
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-              ),
-              child: const Text('C'),
-              onPressed: () {
-                tentativa(2);
-              },
-            ),
-          ],
+        Container(
+          color: Colors.green,
+          child: const Text('Você ganhou', style: TextStyle(fontSize: 20)),
+        ),
+        ElevatedButton(
+          onPressed: () => resetarJogo(),
+          child: const Text('Resetar', style: TextStyle(fontSize: 20)),
         ),
       ],
     );
@@ -226,15 +178,20 @@ class Derrota extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(color: Colors.green, child: const Text('Você ganhou', style: TextStyle(fontSize: 20),)),
-        ElevatedButton(
-          onPressed: () => resetarJogo(),
-          child: const Text('Resetar', style: TextStyle(fontSize: 20)),
-        ),
-      ],
-    );  }
+    return Container(
+      color: Colors.red,
+      width: 500,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Você perdeu', style: TextStyle(fontSize: 30)),
+          // *** 4. botão de resetar ***
+          ElevatedButton(
+            onPressed: () => resetarJogo(),
+            child: const Text('Resetar', style: TextStyle(fontSize: 20)),
+          ),
+        ],
+      ),
+    );
+  }
 }
-
