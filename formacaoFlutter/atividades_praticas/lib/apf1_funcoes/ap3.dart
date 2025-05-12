@@ -18,18 +18,36 @@ class MyApp extends StatelessWidget {
   }
 }
 
+enum estadoJogo{
+  andamento,
+  ganhou,
+  perdeu
+}
+
+
 class MyWidget extends StatefulWidget {
   @override
   State<MyWidget> createState() => _MyWidgetState();
 }
 
 class _MyWidgetState extends State<MyWidget> {
+  estadoJogo estado = estadoJogo.andamento;
+
   final random = Random();
 
   var botaoCorreto = 0;
   var clicks = 0;
   var ganhou = false;
   var perdeu = false;
+
+  void resetarJogo() {
+    setState(() {
+      ganhou = false;
+      perdeu = false;
+      clicks = 0;
+      botaoCorreto = random.nextInt(3);
+    });
+  }
 
   // Esse metodo e chamado somente uma vez, ao iniciar o state
   @override
@@ -46,7 +64,7 @@ class _MyWidgetState extends State<MyWidget> {
     setState(() {
       // Verificar se a opção escolhida esta correta
       if (opcao == botaoCorreto) {
-        ganhou = true;
+        estado = estadoJogo.ganhou;
       } else {
         // Se estiver errada, incrementa o contador de clicks
         clicks++;
@@ -61,9 +79,26 @@ class _MyWidgetState extends State<MyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // Se o usuário ganhou, retorna a mensagem de sucesso com o fundo em verde
+
+    return switch(estado){
+      estadoJogo.ganhou =>
+
+    };
+
+
+
+    /* Se o usuário ganhou, retorna a mensagem de sucesso com o fundo em verde
     if (ganhou) {
-      return Container(color: Colors.green, child: const Text('Você ganhou'));
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(color: Colors.green, child: const Text('Você ganhou', style: TextStyle(fontSize: 20),)),
+          ElevatedButton(
+            onPressed: () => resetarJogo(),
+            child: const Text('Resetar', style: TextStyle(fontSize: 20)),
+          ),
+        ],
+      );
     }
 
     // Se o usuário perdeu, retorna a mensagem de fracasso com o fundo em vermelho
@@ -77,7 +112,7 @@ class _MyWidgetState extends State<MyWidget> {
             const Text('Você perdeu', style: TextStyle(fontSize: 30)),
             // ******* 4. botão de resetar
             ElevatedButton(
-              onPressed: () => MyWidget(),
+              onPressed: () => resetarJogo(),
               child: const Text('Resetar', style: TextStyle(fontSize: 20)),
             ),
           ],
@@ -85,7 +120,64 @@ class _MyWidgetState extends State<MyWidget> {
       );
     }
 
-    // Nesse momento o jogo ainda nao foi finalizado
+
+     */
+
+    /* Nesse momento o jogo ainda nao foi finalizado
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              ),
+              child: const Text('A'),
+              onPressed: () {
+                tentativa(0);
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              ),
+              child: const Text('B'),
+              onPressed: () {
+                tentativa(1);
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              ),
+              child: const Text('C'),
+              onPressed: () {
+                tentativa(2);
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+    */
+
+  }
+}
+
+
+// *** Widget para cada situação de jogo ***
+
+// widget para jogo em andamento
+class Andamento extends StatelessWidget {
+  const Andamento(this.tentativa);
+
+  final void Function(int) tentativa;
+
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -124,7 +216,25 @@ class _MyWidgetState extends State<MyWidget> {
       ],
     );
   }
+}
 
+//widget para derrota
+class Derrota extends StatelessWidget {
+  const Derrota(this.resetarJogo);
 
+  final void Function() resetarJogo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(color: Colors.green, child: const Text('Você ganhou', style: TextStyle(fontSize: 20),)),
+        ElevatedButton(
+          onPressed: () => resetarJogo(),
+          child: const Text('Resetar', style: TextStyle(fontSize: 20)),
+        ),
+      ],
+    );  }
 }
 
