@@ -22,7 +22,6 @@ String obterPalavra(){
 //função que verifica se a palavra está correta
 bool verificadorDePalavras(String palavraSorteada, String palavraDoUser){
 
-  print("\n");
   //dar um split na palavra sorteada
   List <String> letrasPalavraSorteada = palavraSorteada.split('');
   // dar um split na palavra do user
@@ -32,6 +31,7 @@ bool verificadorDePalavras(String palavraSorteada, String palavraDoUser){
 
   // [1,1,3,0,0]
   // [1,-, -, +, +]
+  // [0,0,1,1,0]
 
   // [p,a,s,s,o] palavra original
   // [b,a,s,t,a]
@@ -93,8 +93,7 @@ bool verificadorDePalavras(String palavraSorteada, String palavraDoUser){
 
 void main(){
   // pegar a palavra sorteada
-  final palavraSorteada = "passo";
-  print("A palavra sorteada foi (teste) > $palavraSorteada");
+  final palavraSorteada = sortearPalavra();
 
   //loop de obter dado usuário e verificar
   int i=0;
