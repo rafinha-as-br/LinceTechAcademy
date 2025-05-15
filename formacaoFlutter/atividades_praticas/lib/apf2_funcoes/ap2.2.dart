@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -139,47 +138,45 @@ class _ap22AppState extends State<ap22App> {
                 child: Stack(
                   children: [
                     Positioned(
+                      top: 10,
+                      left: 10,
                       child: Container(
                         width: 50,
                         height: 50,
                         color: Colors.deepPurple,
                       ),
-                      top: 10,
-                      left: 10,
                     ),
                     Positioned(
+                      top: 20,
+                      left: 20,
                       child: Container(
                         width: 50,
                         height: 50,
                         color: Colors.red,
                       ),
-                      top: 20,
-                      left: 20,
                     ),
                     Positioned(
+                      top: 30,
+                      left: 30,
                       child: Container(
                         width: 50,
                         height: 50,
                         color: Colors.yellow,
                       ),
-                      top: 30,
-                      left: 30,
                     ),
                     Positioned(
+                      top: 40,
+                      left: 40,
                       child: Container(
                         width: 50,
                         height: 50,
                         color: Colors.green,
                       ),
-                      top: 40,
-                      left: 40,
                     ),
 
                   ],
                 ),
               ),
-
-
 
 
             ],
