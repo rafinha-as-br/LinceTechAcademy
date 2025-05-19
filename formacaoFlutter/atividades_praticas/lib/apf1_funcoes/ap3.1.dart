@@ -180,7 +180,7 @@ class Derrota extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.red,
-      width: 500,
+      width: 400,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

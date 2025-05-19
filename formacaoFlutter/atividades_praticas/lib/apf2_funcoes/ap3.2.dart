@@ -13,6 +13,7 @@ class ap32App extends StatefulWidget {
   State<ap32App> createState() => _ap32AppState();
 }
 
+
 enum Formato { quadrado, circulo }
 
 enum Cores { azul, branco, vermelho, verde, preto, amarelo }
@@ -72,6 +73,7 @@ class _ap32AppState extends State<ap32App> {
 
     //switch case para construçao do formato geometrico
     Widget formaGeometrica;
+
     switch (formatoAtual) {
       case Formato.quadrado:
         formaGeometrica = Container(

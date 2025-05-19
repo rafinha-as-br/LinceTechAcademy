@@ -59,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 "Teste de childrens!",
               style: TextStyle(fontSize: 50, fontFamily: "Arial"),
             ),
+            FloatingActionButton(onPressed: _incrementCounter, child: Icon(Icons.access_alarms),),
 
           ],
 
