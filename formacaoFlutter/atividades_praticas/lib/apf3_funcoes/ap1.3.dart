@@ -1,129 +1,32 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(ap13app());
+  runApp(ap113App());
 }
 
-class Pessoa {
-  late String nome;
-  late int idade;
-
-  Pessoa({required this.nome, required this.idade});
-}
-
-List<Pessoa> listaPessoas = [];
-
-class formulario extends StatefulWidget {
-  final Function(Pessoa) onSalvar;
-
-  const formulario({required this.onSalvar, super.key});
+class ap113App extends StatefulWidget {
+  const ap113App({super.key});
 
   @override
-  State<formulario> createState() => _formularioState();
+  State<ap113App> createState() => _ap113AppState();
 }
 
-class _formularioState extends State<formulario> {
-
-  final TextEditingController nomeController = TextEditingController();
-  final TextEditingController idadeController = TextEditingController();
-
-
-  void salvarButton() {
-    final nome = nomeController.text.trim();
-    final idadeStr = idadeController.text.trim();
-
-    //valida nome
-    if (nome.isEmpty || nome.length < 3 || nome[0] != nome[0].toUpperCase()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Nome inválido!")),
-      );
-      return;
-    }
-
-    //valida idade
-    final idade = int.tryParse(idadeStr);
-    if (idade == null || idade < 18) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Idade inválida!")),
-      );
-      return;
-    }
-
-    // instanciar uma classe e adicionar na lista de pessoas
-    final pessoa = Pessoa(nome: nome, idade: idade);
-    widget.onSalvar(pessoa);
-
-    nomeController.clear();
-    idadeController.clear();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('Insira seus dados: '),
-        //input nome
-        TextField(
-          controller: nomeController,
-          decoration: InputDecoration(labelText: 'Nome'),
-        ),
-        //input idade
-        TextField(
-          controller: idadeController,
-          decoration: InputDecoration(labelText: 'Idade'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            salvarButton();
-          },
-          child: Text('Salvar'),
-        ),
-      ],
-    );
-  }
-}
-
-class pessoasWidgetLista extends StatelessWidget {
-  const pessoasWidgetLista({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: listaPessoas.length,
-      itemBuilder: (context, indice) {
-        return ListTile(title: Text('${listaPessoas[indice]}'));
-      },
-    );
-  }
-}
-
-class ap13app extends StatefulWidget {
-  const ap13app({super.key});
-
-  @override
-  State<ap13app> createState() => _ap13appState();
-}
-
-class _ap13appState extends State<ap13app> {
-
-  List<Pessoa> pessoas = [];
-
+class _ap113AppState extends State<ap113App> {
   void adicionarPessoa(Pessoa pessoa) {
-    setState(() {
-      pessoas.add(pessoa);
-    });
+    listaPessoas.add(pessoa);
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // formulario widget
-              formulario(onSalvar: adicionarPessoa),
-              //column de exibição das informações
-              pessoasWidgetLista(),
+              SizedBox(height: 20,),
+              FormularioWidget(onSalvar: adicionarPessoa),
+              Expanded(child: ListPessoasWidget()),
             ],
           ),
         ),
@@ -132,3 +35,114 @@ class _ap13appState extends State<ap13app> {
   }
 }
 
+class Pessoa {
+  String nome;
+  int idade;
+
+  Pessoa({required this.nome, required this.idade});
+}
+
+List<Pessoa> listaPessoas = [];
+
+class FormularioWidget extends StatefulWidget {
+  final Function(Pessoa) onSalvar;
+
+  const FormularioWidget({super.key, required this.onSalvar});
+
+  @override
+  State<FormularioWidget> createState() => _FormularioWidgetState();
+}
+
+class _FormularioWidgetState extends State<FormularioWidget> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController nomeController = TextEditingController();
+  final TextEditingController idadeController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Insira os seus dados: "),
+          //input nome
+          TextFormField(
+            controller: nomeController,
+            decoration: InputDecoration(labelText: 'Nome'),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Nome obrigatório";
+              }
+              if (value.length < 3) {
+                return "Nome deve ter pelo menos 3 letras";
+              }
+              if (!value[0].contains(RegExp(r'[A-Z]'))) {
+                return "Nome deve começar com letra maiúscula";
+              }
+              return null;
+            },
+          ),
+          //input idade
+          TextFormField(
+            controller: idadeController,
+            decoration: InputDecoration(labelText: 'Idade'),
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Idade obrigatória!";
+              }
+              // a fazer validador de números inteiros...
+              final idade = int.tryParse(value);
+              if (idade == null) {
+                return "Digite um número válido!";
+              }
+              //validador de maioridade
+              if (idade < 18) {
+                return 'Não pode ser menor de 18 anos!';
+              }
+              return null;
+            },
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                final pessoa = Pessoa(
+                  nome: nomeController.text,
+                  idade: int.parse(idadeController.text),
+                );
+                widget.onSalvar(pessoa);
+                nomeController.clear();
+                idadeController.clear();
+              }
+            },
+            child: Text("Salvar"),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ListPessoasWidget extends StatefulWidget {
+  const ListPessoasWidget({super.key});
+
+  @override
+  State<ListPessoasWidget> createState() => _ListPessoasWidgetState();
+}
+
+class _ListPessoasWidgetState extends State<ListPessoasWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: listaPessoas.length,
+      itemBuilder: (context, indice) {
+        return ListTile(
+          title: Text(
+            'Nome: ${listaPessoas[indice].nome}, Idade: ${listaPessoas[indice].idade}',
+          ),
+        );
+      },
+    );
+  }
+}
