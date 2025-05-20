@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,23 +13,25 @@ class ap113App extends StatefulWidget {
 }
 
 class _ap113AppState extends State<ap113App> {
+  List<Pessoa> listaPessoas = [];
+
   void adicionarPessoa(Pessoa pessoa) {
-    listaPessoas.add(pessoa);
+    setState(() {
+      listaPessoas.add(pessoa);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 20,),
-              FormularioWidget(onSalvar: adicionarPessoa),
-              Expanded(child: ListPessoasWidget()),
-            ],
-          ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FormularioWidget(onSalvar: adicionarPessoa),
+            Expanded(
+                child: ListPessoasWidget(listaDePessoas: listaPessoas)),
+          ],
         ),
       ),
     );
@@ -38,11 +41,10 @@ class _ap113AppState extends State<ap113App> {
 class Pessoa {
   String nome;
   int idade;
+  bool status;
 
-  Pessoa({required this.nome, required this.idade});
+  Pessoa({required this.nome, required this.idade, required this.status});
 }
-
-List<Pessoa> listaPessoas = [];
 
 class FormularioWidget extends StatefulWidget {
   final Function(Pessoa) onSalvar;
@@ -57,13 +59,13 @@ class _FormularioWidgetState extends State<FormularioWidget> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController idadeController = TextEditingController();
+  bool statusPessoa = false;
 
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Insira os seus dados: "),
           //input nome
@@ -104,12 +106,27 @@ class _FormularioWidgetState extends State<FormularioWidget> {
               return null;
             },
           ),
+          //campo status
+          Column(
+            children: [
+              Text('Status da pessoa (ativo/inativo):'),
+              Checkbox(
+                value: statusPessoa,
+                onChanged: (bool? status) {
+                  setState(() {
+                    statusPessoa = status ?? false;
+                  });
+                },
+              ),
+            ],
+          ),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 final pessoa = Pessoa(
                   nome: nomeController.text,
                   idade: int.parse(idadeController.text),
+                  status: statusPessoa,
                 );
                 widget.onSalvar(pessoa);
                 nomeController.clear();
@@ -125,7 +142,9 @@ class _FormularioWidgetState extends State<FormularioWidget> {
 }
 
 class ListPessoasWidget extends StatefulWidget {
-  const ListPessoasWidget({super.key});
+  final List<Pessoa> listaDePessoas;
+
+  ListPessoasWidget({super.key, required this.listaDePessoas});
 
   @override
   State<ListPessoasWidget> createState() => _ListPessoasWidgetState();
@@ -135,11 +154,11 @@ class _ListPessoasWidgetState extends State<ListPessoasWidget> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: listaPessoas.length,
+      itemCount: widget.listaDePessoas.length,
       itemBuilder: (context, indice) {
         return ListTile(
           title: Text(
-            'Nome: ${listaPessoas[indice].nome}, Idade: ${listaPessoas[indice].idade}',
+            'Nome: ${widget.listaDePessoas[indice].nome}, Idade: ${widget.listaDePessoas[indice].idade}, ativo: ${widget.listaDePessoas[indice].status}',
           ),
         );
       },
