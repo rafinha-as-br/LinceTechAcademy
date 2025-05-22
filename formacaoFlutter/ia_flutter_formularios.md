@@ -1,8 +1,7 @@
 
 ### Notas do aluno
 
----
-
+Os conteúdos apresentados pela IA foram muito úteis na hora de realizar a lista de atividades.
 ### O que é um widget TextField em Flutter e para que ele serve?
 
 O `TextField` é um widget do Flutter usado para entrada de texto pelo usuário. Ele é uma das formas mais básicas de capturar dados, como nomes, senhas, e-mails, entre outros. Pode ser personalizado com estilos, ícones, tipo de teclado e validações.
