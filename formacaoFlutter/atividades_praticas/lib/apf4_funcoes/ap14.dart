@@ -11,7 +11,7 @@ Observações!!
 
 - Eu utilizei botões com o nome de cada cor em vez de linhas coloridas
 para poder chamar uma função de callBack
-(estou treinando fazer funções callBacks)
+(estou treinando fazer funções callBacks por conta da faculdade)
 
 
 */
