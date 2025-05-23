@@ -5,15 +5,16 @@ void main() {
   runApp(ap14App());
 }
 
-// -App começa no widget pai que tem a lista de cores
-// - Tem uma função neste widget pai que é chamada como callBack no widget de lista,
-// essa função verifica o texto do botão pressionado e muda para a tela
-// com aquela cor (o widget vai ser construido com aquela cor passada na função)
-// - Esse widget com a cor passada vai ter um botão para voltar para a tela anterior
-// - Adicionar uma observação que eu fiz uma alteração e fiz com botões para
-// testar passar informações para uma outra tela (parâmetros)
 
-//lista de cores
+/*
+Observações!!
+
+- Eu utilizei botões com o nome de cada cor em vez de linhas coloridas
+para poder chamar uma função de callBack
+(estou treinando fazer funções callBacks)
+
+
+*/
 
 class ap14App extends StatelessWidget {
   ap14App({super.key});
