@@ -18,6 +18,9 @@
       <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas (dentro da Lib)/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas (dentro da Lib)/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas (dentro da Lib)/build" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/ferramentas/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/ferramentas/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/ferramentas/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
