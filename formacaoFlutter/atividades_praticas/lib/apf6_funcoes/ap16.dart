@@ -4,7 +4,12 @@ import 'package:provider/provider.dart';
 const Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 
 void main() {
-  runApp(MyApp());
+  runApp(
+      ChangeNotifierProvider(
+        create: (_) => EstadoListaDePessoas(),
+        child: MyApp(),
+      ),
+  );
 }
 
 enum TipoSanguineo {
@@ -90,6 +95,7 @@ class _MyWidgetState extends State<MyWidget> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
 
             children: [
               Row(
@@ -101,12 +107,16 @@ class _MyWidgetState extends State<MyWidget> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.yellow,
+                          color: Colors.blue,
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                         ),
                         child: Column(
                          children: [
-                           Text('Listar as pessoas'),
+                           Text('Listar as pessoas',
+                             style: TextStyle(
+                               fontSize: 30,
+                               fontWeight: FontWeight.bold,
+                             ),),
                          ],
                         ),
                       ),
@@ -137,11 +147,11 @@ class TelaListagemPessoas extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Form(
                 child: ListView.builder(
-                  itemCount: EstadoListaDePessoas()._listaDePessoas.length,
+                  itemCount: pessoa._listaDePessoas.length,
                   itemBuilder: (context, indice) {
                     return ListTile(
                       title: Text(
-                        EstadoListaDePessoas().listaDePessoas[indice],
+                        pessoa.listaDePessoas[indice],
                       ),
                     );
                   },
