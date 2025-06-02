@@ -9,18 +9,18 @@
       <excludeFolder url="file://$MODULE_DIR$/desafios/clima/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/clima/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/clima/build" />
-      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app/build" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/requisicoes_treino/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/requisicoes_treino/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/requisicoes_treino/build" />
-      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas (dentro da Lib)/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas (dentro da Lib)/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas (dentro da Lib)/build" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/ferramentas/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/ferramentas/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/desafios/ferramentas/build" />
+      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas/build" />
+      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app (uso pessoal para testes)/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app (uso pessoal para testes)/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app (uso pessoal para testes)/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
