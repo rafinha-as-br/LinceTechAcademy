@@ -43,6 +43,9 @@ class Pessoa {
 
 class EstadoListaDePessoas with ChangeNotifier {
   final _listaDePessoas = <Pessoa>[];
+  TipoSanguineo? _tipoSanguineo;
+
+  TipoSanguineo? get tipoSelecionado => _tipoSanguineo;
 
   List<Pessoa> get pessoas => List.unmodifiable(_listaDePessoas);
 
@@ -58,8 +61,11 @@ class EstadoListaDePessoas with ChangeNotifier {
 
   // todo: implementar métodos restantes
 
-  //Getter da lista de pessoas
-  get listaDePessoas => _listaDePessoas;
+  //Função para pegar o tipo sanguineo no dropdbutton
+  void selecionaTS(TipoSanguineo? tipo){
+    _tipoSanguineo = tipo;
+    notifyListeners();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -70,6 +76,7 @@ class MyApp extends StatelessWidget {
       routes: {
         _MyWidgetState.routeName: (context) => MyWidget(),
         TelaListagemPessoas.routeName: (context) => TelaListagemPessoas(),
+        TelaInclusao.routeName: (context) => TelaInclusao(),
       },
 
       theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: darkBlue),
@@ -122,6 +129,29 @@ class _MyWidgetState extends State<MyWidget> {
                       ),
                     ),
                   ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.pushNamed(context, TelaInclusao.routeName);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                        ),
+                        child: Column(
+                          children: [
+                            Text('Adicionar uma pessoa',
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
                 ]
               ),
             ],
@@ -143,15 +173,15 @@ class TelaListagemPessoas extends StatelessWidget {
       appBar: AppBar(title: Text("Listagem de pessoas")),
       body: Consumer<EstadoListaDePessoas>(
         builder:
-            (context, pessoa, child) => Padding(
+            (context, p, child) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Form(
                 child: ListView.builder(
-                  itemCount: pessoa._listaDePessoas.length,
+                  itemCount: p._listaDePessoas.length,
                   itemBuilder: (context, indice) {
                     return ListTile(
                       title: Text(
-                        pessoa.listaDePessoas[indice],
+                        p.pessoas[indice].toString(),
                       ),
                     );
                   },
@@ -163,12 +193,117 @@ class TelaListagemPessoas extends StatelessWidget {
   }
 }
 
+
+
+
 class TelaInclusao extends StatelessWidget {
-  const TelaInclusao({super.key});
+  TelaInclusao({super.key});
+  final _formKey = GlobalKey<FormState>();
+  static const routeName = '/telaInclusao';
+
+
+  final nomeController = TextEditingController();
+  final emailController = TextEditingController();
+  final telefoneController = TextEditingController();
+  final linkGithubController = TextEditingController();
+  final tipoSanguineoController = TextEditingController();
+
+
+
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    TipoSanguineo tipoSanguineo = TipoSanguineo.oPositivo;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Adicionando uma pessoa'),
+      ),
+      body: Consumer<EstadoListaDePessoas>(builder:
+        (context, pessoa, child)=> Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Form(
+            key: _formKey,
+            child:
+            Column(
+              children: [
+                TextFormField(
+                  controller: nomeController,
+                  decoration: InputDecoration(labelText: 'Nome completo'),
+                  validator: (value){
+                    if(value==null || value.isEmpty){
+                      return 'Campo obrigatório';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(labelText: 'Email'),
+                  validator: (value){
+                    if(value==null || value.isEmpty){
+                      return 'Campo obrigatório';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: telefoneController,
+                  decoration: InputDecoration(labelText: 'Telefone'),
+                  validator: (value){
+                    if(value==null || value.isEmpty){
+                      return 'Campo obrigatório';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: linkGithubController,
+                  decoration: InputDecoration(labelText: 'GitHub'),
+                  validator: (value){
+                    if(value==null || value.isEmpty){
+                      return 'Campo obrigatório';
+                    }
+                    return null;
+                  },
+                ),
+                DropdownButton<TipoSanguineo>(
+                    hint: Text('Tipo sanguíneo'),
+                    value: tipoSanguineo,
+                    items: TipoSanguineo.values.map((tipo){
+                      return DropdownMenuItem<TipoSanguineo>(
+                        value: tipo,
+                        child: Text(tipo.name),
+                      );
+                    }).toList(),
+                    onChanged: (TipoSanguineo? novoValor){
+                      if(novoValor != null){
+                        tipoSanguineo = novoValor;
+                      }
+                    }),
+                Expanded(
+                  child: Container(
+                    child: InkWell(
+                      onTap: (){
+                        if(_formKey.currentState!.validate()){
+                          Pessoa pessoaNova = Pessoa(
+                              nome: nomeController.text,
+                              email: emailController.text,
+                              telefone: telefoneController.text,
+                              github: linkGithubController.text,
+                              tipoSanguineo: tipoSanguineo);
+                          pessoa.incluir(pessoaNova);
+                        }
+                      },
+                      child: Text('Salvar e adicionar'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
