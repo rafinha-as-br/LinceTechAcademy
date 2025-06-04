@@ -38,14 +38,18 @@ class Pessoa {
   final String github;
   final TipoSanguineo tipoSanguineo;
 
-// todo: implementar equals e hashcode
+  // todo: implementar equals e hashcode
 }
 
 class EstadoListaDePessoas with ChangeNotifier {
   final _listaDePessoas = <Pessoa>[];
+  final List<String> _listaDoFiltro = ['Nenhum', 'Inverso', 'Por tipo sanguíneo'];
+  String? filtroSelecionado = 'Nenhum';
+
   TipoSanguineo? _tipoSanguineo;
 
   TipoSanguineo? get tipoSelecionado => _tipoSanguineo;
+
 
   List<Pessoa> get pessoas => List.unmodifiable(_listaDePessoas);
 
@@ -95,18 +99,12 @@ class EstadoListaDePessoas with ChangeNotifier {
       children: [
         Row(
           children: [
-            Text(
-              'Nome: ${pessoa.nome} ',
-              style: TextStyle(fontSize: 20),
-            ),
+            Text('Nome: ${pessoa.nome} ', style: TextStyle(fontSize: 20)),
           ],
         ),
         Row(
           children: [
-            Text(
-              'Gmail: ${pessoa.email}',
-              style: TextStyle(fontSize: 20),
-            ),
+            Text('Gmail: ${pessoa.email}', style: TextStyle(fontSize: 20)),
           ],
         ),
         Row(
@@ -119,33 +117,31 @@ class EstadoListaDePessoas with ChangeNotifier {
         ),
         Row(
           children: [
-            Text(
-              'GitHub: ${pessoa.github}',
-              style: TextStyle(fontSize: 20),
-            ),
+            Text('GitHub: ${pessoa.github}', style: TextStyle(fontSize: 20)),
           ],
         ),
         Row(
           children: [
-            Text(
-              'Tipo sanguíneo: ',
-              style: TextStyle(fontSize: 20),
-            ),
+            Text('Tipo sanguíneo: ', style: TextStyle(fontSize: 20)),
             Text(
               '${pessoa.tipoSanguineo.name}',
               style: TextStyle(
                 fontSize: 20,
-                color: p.selecionaCor(
-                  pessoa.tipoSanguineo,
-                ),
+                color: p.selecionaCor(pessoa.tipoSanguineo),
               ),
             ),
           ],
         ),
       ],
     );
-
   }
+
+  //função que define qual é o tipo de filtro selecionado no dropButton
+  void definirFiltroSelecionado(String? novoValor){
+    filtroSelecionado = novoValor;
+    notifyListeners();
+  }
+
 
 }
 
@@ -167,6 +163,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+//widget pai
 class MyWidget extends StatefulWidget {
   @override
   State<MyWidget> createState() => _MyWidgetState();
@@ -249,100 +246,68 @@ class _MyWidgetState extends State<MyWidget> {
   }
 }
 
+//tela de listagem das pessoas
 class TelaListagemPessoas extends StatelessWidget {
-  const TelaListagemPessoas({super.key});
+   TelaListagemPessoas({super.key});
 
   static const routeName = '/telaListagemPessoas';
 
+  static final List<String> _listaFiltro = ['Normal', 'Inverso', 'Tipo sanguíneo'];
+
+  String filtroselecionado = 'Norma';
+
+
   @override
   Widget build(BuildContext context) {
+    final dropdownState = Provider.of<EstadoListaDePessoas>(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text("Listagem de pessoas")),
+      appBar: AppBar(
+        title: Text("Listagem de pessoas"),
+        actions: [
+          DropdownButton<String>(
+            items: dropdownState._listaDoFiltro.map((String value) {
+              return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+              );
+            }).toList(),
+            hint: Text(filtroselecionado),
+            value: filtroselecionado,
+            onChanged: (selecao){
+                dropdownState.definirFiltroSelecionado(selecao);
+
+            },
+          ),
+        ],
+      ),
       body: Consumer<EstadoListaDePessoas>(
         builder:
-            (context, p, child) =>
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Form(
-                child: ListView.builder(
-                  itemCount: p._listaDePessoas.length,
-                  itemBuilder: (context, indice) {
-                    return ListTile(
-                      title: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                top: BorderSide(color: Colors.white, width: 3),
-                                bottom: BorderSide(
-                                  color: Colors.white,
-                                  width: 3,
-                                ),
-                              ),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Nome: ${p.pessoas[indice].nome} ',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Gmail: ${p.pessoas[indice].email}',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Telefone: ${p.pessoas[indice].telefone}',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'GitHub: ${p.pessoas[indice].github}',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Tipo sanguíneo: ',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                    Text(
-                                      '${p.pessoas[indice].tipoSanguineo.name}',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: p.selecionaCor(
-                                          p.pessoas[indice].tipoSanguineo,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+            (context, p, child) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: ListView.builder(
+                itemCount: p._listaDePessoas.length,
+                itemBuilder: (context, indice) {
+                  return ListTile(
+                    title: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: Colors.white, width: 3),
+                              bottom: BorderSide(color: Colors.white, width: 3),
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          child: p.exibirPessoa(p.pessoas[indice], p),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
       ),
@@ -369,8 +334,7 @@ class TelaInclusao extends StatelessWidget {
       appBar: AppBar(title: Text('Adicionando uma pessoa')),
       body: Consumer<EstadoListaDePessoas>(
         builder:
-            (context, pessoa, child) =>
-            Padding(
+            (context, pessoa, child) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Form(
                 key: _formKey,
@@ -420,12 +384,12 @@ class TelaInclusao extends StatelessWidget {
                       hint: Text('Tipo sanguíneo'),
                       value: tipoSanguineo,
                       items:
-                      TipoSanguineo.values.map((tipo) {
-                        return DropdownMenuItem<TipoSanguineo>(
-                          value: tipo,
-                          child: Text(tipo.name),
-                        );
-                      }).toList(),
+                          TipoSanguineo.values.map((tipo) {
+                            return DropdownMenuItem<TipoSanguineo>(
+                              value: tipo,
+                              child: Text(tipo.name),
+                            );
+                          }).toList(),
                       onChanged: (TipoSanguineo? novoValor) {
                         if (novoValor != null) {
                           tipoSanguineo = novoValor;
