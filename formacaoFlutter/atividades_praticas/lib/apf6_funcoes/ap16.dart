@@ -5,10 +5,10 @@ const Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 
 void main() {
   runApp(
-      ChangeNotifierProvider(
-        create: (_) => EstadoListaDePessoas(),
-        child: MyApp(),
-      ),
+    ChangeNotifierProvider(
+      create: (_) => EstadoListaDePessoas(),
+      child: MyApp(),
+    ),
   );
 }
 
@@ -38,7 +38,7 @@ class Pessoa {
   final String github;
   final TipoSanguineo tipoSanguineo;
 
-  // todo: implementar equals e hashcode
+// todo: implementar equals e hashcode
 }
 
 class EstadoListaDePessoas with ChangeNotifier {
@@ -62,10 +62,91 @@ class EstadoListaDePessoas with ChangeNotifier {
   // todo: implementar métodos restantes
 
   //Função para pegar o tipo sanguineo no dropdbutton
-  void selecionaTS(TipoSanguineo? tipo){
+  void selecionaTS(TipoSanguineo? tipo) {
     _tipoSanguineo = tipo;
     notifyListeners();
   }
+
+  //função para retornar o tipo de cor baseado no tipo sanguineo
+  Color selecionaCor(TipoSanguineo tipo) {
+    switch (tipo) {
+      case TipoSanguineo.aPositivo:
+        return Colors.blue;
+      case TipoSanguineo.aNegativo:
+        return Colors.red;
+      case TipoSanguineo.bPositivo:
+        return Colors.purple;
+      case TipoSanguineo.bNegativo:
+        return Colors.orange;
+      case TipoSanguineo.oPositivo:
+        return Colors.green;
+      case TipoSanguineo.oNegativo:
+        return Colors.yellow;
+      case TipoSanguineo.abPositivo:
+        return Colors.cyan;
+      case TipoSanguineo.abNegativo:
+        return Colors.white;
+    }
+  }
+
+  //função que exibe uma pessoa
+  Column exibirPessoa(Pessoa pessoa, EstadoListaDePessoas p) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              'Nome: ${pessoa.nome} ',
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text(
+              'Gmail: ${pessoa.email}',
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text(
+              'Telefone: ${pessoa.telefone}',
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text(
+              'GitHub: ${pessoa.github}',
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text(
+              'Tipo sanguíneo: ',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              '${pessoa.tipoSanguineo.name}',
+              style: TextStyle(
+                fontSize: 20,
+                color: p.selecionaCor(
+                  pessoa.tipoSanguineo,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+
+  }
+
 }
 
 class MyApp extends StatelessWidget {
@@ -109,8 +190,11 @@ class _MyWidgetState extends State<MyWidget> {
                 children: [
                   Expanded(
                     child: InkWell(
-                      onTap: (){
-                        Navigator.pushNamed(context, TelaListagemPessoas.routeName);
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          TelaListagemPessoas.routeName,
+                        );
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -118,20 +202,22 @@ class _MyWidgetState extends State<MyWidget> {
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                         ),
                         child: Column(
-                         children: [
-                           Text('Listar as pessoas',
-                             style: TextStyle(
-                               fontSize: 30,
-                               fontWeight: FontWeight.bold,
-                             ),),
-                         ],
+                          children: [
+                            Text(
+                              'Listar as pessoas',
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
                   Expanded(
                     child: InkWell(
-                      onTap: (){
+                      onTap: () {
                         Navigator.pushNamed(context, TelaInclusao.routeName);
                       },
                       child: Container(
@@ -141,18 +227,19 @@ class _MyWidgetState extends State<MyWidget> {
                         ),
                         child: Column(
                           children: [
-                            Text('Adicionar uma pessoa',
+                            Text(
+                              'Adicionar uma pessoa',
                               style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
-                              ),),
+                              ),
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
-
-                ]
+                ],
               ),
             ],
           ),
@@ -173,15 +260,85 @@ class TelaListagemPessoas extends StatelessWidget {
       appBar: AppBar(title: Text("Listagem de pessoas")),
       body: Consumer<EstadoListaDePessoas>(
         builder:
-            (context, p, child) => Padding(
+            (context, p, child) =>
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Form(
                 child: ListView.builder(
                   itemCount: p._listaDePessoas.length,
                   itemBuilder: (context, indice) {
                     return ListTile(
-                      title: Text(
-                        p.pessoas[indice].toString(),
+                      title: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(color: Colors.white, width: 3),
+                                bottom: BorderSide(
+                                  color: Colors.white,
+                                  width: 3,
+                                ),
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Nome: ${p.pessoas[indice].nome} ',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Gmail: ${p.pessoas[indice].email}',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Telefone: ${p.pessoas[indice].telefone}',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'GitHub: ${p.pessoas[indice].github}',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Tipo sanguíneo: ',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                    Text(
+                                      '${p.pessoas[indice].tipoSanguineo.name}',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: p.selecionaCor(
+                                          p.pessoas[indice].tipoSanguineo,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -193,14 +350,11 @@ class TelaListagemPessoas extends StatelessWidget {
   }
 }
 
-
-
-
 class TelaInclusao extends StatelessWidget {
   TelaInclusao({super.key});
+
   final _formKey = GlobalKey<FormState>();
   static const routeName = '/telaInclusao';
-
 
   final nomeController = TextEditingController();
   final emailController = TextEditingController();
@@ -208,100 +362,99 @@ class TelaInclusao extends StatelessWidget {
   final linkGithubController = TextEditingController();
   final tipoSanguineoController = TextEditingController();
 
-
-
-
   @override
   Widget build(BuildContext context) {
     TipoSanguineo tipoSanguineo = TipoSanguineo.oPositivo;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Adicionando uma pessoa'),
-      ),
-      body: Consumer<EstadoListaDePessoas>(builder:
-        (context, pessoa, child)=> Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Form(
-            key: _formKey,
-            child:
-            Column(
-              children: [
-                TextFormField(
-                  controller: nomeController,
-                  decoration: InputDecoration(labelText: 'Nome completo'),
-                  validator: (value){
-                    if(value==null || value.isEmpty){
-                      return 'Campo obrigatório';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
-                  validator: (value){
-                    if(value==null || value.isEmpty){
-                      return 'Campo obrigatório';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: telefoneController,
-                  decoration: InputDecoration(labelText: 'Telefone'),
-                  validator: (value){
-                    if(value==null || value.isEmpty){
-                      return 'Campo obrigatório';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: linkGithubController,
-                  decoration: InputDecoration(labelText: 'GitHub'),
-                  validator: (value){
-                    if(value==null || value.isEmpty){
-                      return 'Campo obrigatório';
-                    }
-                    return null;
-                  },
-                ),
-                DropdownButton<TipoSanguineo>(
-                    hint: Text('Tipo sanguíneo'),
-                    value: tipoSanguineo,
-                    items: TipoSanguineo.values.map((tipo){
-                      return DropdownMenuItem<TipoSanguineo>(
-                        value: tipo,
-                        child: Text(tipo.name),
-                      );
-                    }).toList(),
-                    onChanged: (TipoSanguineo? novoValor){
-                      if(novoValor != null){
-                        tipoSanguineo = novoValor;
-                      }
-                    }),
-                Expanded(
-                  child: Container(
-                    child: InkWell(
-                      onTap: (){
-                        if(_formKey.currentState!.validate()){
-                          Pessoa pessoaNova = Pessoa(
-                              nome: nomeController.text,
-                              email: emailController.text,
-                              telefone: telefoneController.text,
-                              github: linkGithubController.text,
-                              tipoSanguineo: tipoSanguineo);
-                          pessoa.incluir(pessoaNova);
+      appBar: AppBar(title: Text('Adicionando uma pessoa')),
+      body: Consumer<EstadoListaDePessoas>(
+        builder:
+            (context, pessoa, child) =>
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: nomeController,
+                      decoration: InputDecoration(labelText: 'Nome completo'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: emailController,
+                      decoration: InputDecoration(labelText: 'Email'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: telefoneController,
+                      decoration: InputDecoration(labelText: 'Telefone'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: linkGithubController,
+                      decoration: InputDecoration(labelText: 'GitHub'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        return null;
+                      },
+                    ),
+                    DropdownButton<TipoSanguineo>(
+                      hint: Text('Tipo sanguíneo'),
+                      value: tipoSanguineo,
+                      items:
+                      TipoSanguineo.values.map((tipo) {
+                        return DropdownMenuItem<TipoSanguineo>(
+                          value: tipo,
+                          child: Text(tipo.name),
+                        );
+                      }).toList(),
+                      onChanged: (TipoSanguineo? novoValor) {
+                        if (novoValor != null) {
+                          tipoSanguineo = novoValor;
                         }
                       },
-                      child: Text('Salvar e adicionar'),
                     ),
-                  ),
+                    Expanded(
+                      child: Container(
+                        child: InkWell(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              Pessoa pessoaNova = Pessoa(
+                                nome: nomeController.text,
+                                email: emailController.text,
+                                telefone: telefoneController.text,
+                                github: linkGithubController.text,
+                                tipoSanguineo: tipoSanguineo,
+                              );
+                              pessoa.incluir(pessoaNova);
+                            }
+                          },
+                          child: Text('Salvar e adicionar'),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
       ),
     );
   }
