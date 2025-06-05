@@ -23,6 +23,12 @@ enum TipoSanguineo {
   abNegativo,
 }
 
+enum TiposFiltros{
+  nenhum,
+  inverso,
+  tipoSanguineos
+}
+
 class Pessoa {
   const Pessoa({
     required this.nome,
@@ -43,23 +49,26 @@ class Pessoa {
 
 class EstadoListaDePessoas with ChangeNotifier {
   final _listaDePessoas = <Pessoa>[];
-  final List<String> _listaDoFiltro = ['Nenhum', 'Inverso', 'Por tipo sanguíneo'];
-  String? filtroSelecionado = 'Nenhum';
 
+  //Lista de pessoas original
+  final _listaDePessoasOriginal = <Pessoa>[];
+
+  TiposFiltros filtroSelecionado = TiposFiltros.nenhum;
   TipoSanguineo? _tipoSanguineo;
 
   TipoSanguineo? get tipoSelecionado => _tipoSanguineo;
 
-
   List<Pessoa> get pessoas => List.unmodifiable(_listaDePessoas);
+  List<Pessoa> get pessoasOriginal => List.unmodifiable(_listaDePessoasOriginal);
+
 
   void incluir(Pessoa pessoa) {
-    _listaDePessoas.add(pessoa);
+    _listaDePessoasOriginal.add(pessoa);
     notifyListeners();
   }
 
   void excluir(Pessoa pessoa) {
-    _listaDePessoas.remove(pessoa);
+    _listaDePessoasOriginal.remove(pessoa);
     notifyListeners();
   }
 
@@ -136,10 +145,56 @@ class EstadoListaDePessoas with ChangeNotifier {
     );
   }
 
+
+
   //função que define qual é o tipo de filtro selecionado no dropButton
-  void definirFiltroSelecionado(String? novoValor){
+  void definirFiltroSelecionado(TiposFiltros novoValor) {
     filtroSelecionado = novoValor;
     notifyListeners();
+  }
+
+  //função que ordena tipos sanguíneos
+  List<Pessoa> ordenaSanguineos() {
+    final ordemPrioritaria = {
+      TipoSanguineo.aPositivo: 1,
+      TipoSanguineo.aNegativo: 2,
+      TipoSanguineo.bPositivo: 3,
+      TipoSanguineo.bNegativo: 4,
+      TipoSanguineo.oPositivo: 5,
+      TipoSanguineo.oNegativo: 6,
+      TipoSanguineo.abPositivo: 7,
+      TipoSanguineo.abNegativo: 8,
+    };
+
+    final listaOrdenada = List<Pessoa>.from(_listaDePessoasOriginal);
+    listaOrdenada.sort((a, b) {
+      return ordemPrioritaria[a.tipoSanguineo]!
+          .compareTo(ordemPrioritaria[b.tipoSanguineo]!);
+    });
+
+    return listaOrdenada;
+  }
+
+
+ // função que altera a lista
+  void alterarListaPessoas(TiposFiltros filtroSelecionado){
+    switch (filtroSelecionado){
+      case TiposFiltros.inverso:
+        _listaDePessoas.clear();
+        _listaDePessoas.addAll(_listaDePessoasOriginal.reversed);
+        notifyListeners();
+        break;
+      case TiposFiltros.tipoSanguineos:
+        _listaDePessoas.clear();
+        List<Pessoa> listOrdenada = ordenaSanguineos();
+        _listaDePessoas.addAll(listOrdenada);
+        notifyListeners();
+        break;
+      case TiposFiltros.nenhum:
+        _listaDePessoas.clear();
+        _listaDePessoas.addAll(_listaDePessoasOriginal);
+        break;
+    }
   }
 
 
@@ -188,9 +243,9 @@ class _MyWidgetState extends State<MyWidget> {
                   Expanded(
                     child: InkWell(
                       onTap: () {
+                        //botar função de recarregar as pessoas da lista
                         Navigator.pushNamed(
-                          context,
-                          TelaListagemPessoas.routeName,
+                          context, TelaListagemPessoas.routeName,
                         );
                       },
                       child: Container(
@@ -248,68 +303,66 @@ class _MyWidgetState extends State<MyWidget> {
 
 //tela de listagem das pessoas
 class TelaListagemPessoas extends StatelessWidget {
-   TelaListagemPessoas({super.key});
+  TelaListagemPessoas({super.key});
 
   static const routeName = '/telaListagemPessoas';
 
-  static final List<String> _listaFiltro = ['Normal', 'Inverso', 'Tipo sanguíneo'];
-
-  String filtroselecionado = 'Norma';
-
+  TiposFiltros filtroselecionado = TiposFiltros.nenhum;
 
   @override
   Widget build(BuildContext context) {
-    final dropdownState = Provider.of<EstadoListaDePessoas>(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Listagem de pessoas"),
-        actions: [
-          DropdownButton<String>(
-            items: dropdownState._listaDoFiltro.map((String value) {
-              return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-              );
-            }).toList(),
-            hint: Text(filtroselecionado),
-            value: filtroselecionado,
-            onChanged: (selecao){
-                dropdownState.definirFiltroSelecionado(selecao);
-
-            },
-          ),
-        ],
-      ),
-      body: Consumer<EstadoListaDePessoas>(
-        builder:
-            (context, p, child) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: ListView.builder(
-                itemCount: p._listaDePessoas.length,
-                itemBuilder: (context, indice) {
-                  return ListTile(
-                    title: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(color: Colors.white, width: 3),
-                              bottom: BorderSide(color: Colors.white, width: 3),
-                            ),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                          child: p.exibirPessoa(p.pessoas[indice], p),
-                        ),
-                      ],
-                    ),
-                  );
+    return Consumer<EstadoListaDePessoas>(
+      builder:
+      (context, p, child) => Scaffold(
+          appBar: AppBar(
+            title: Text("Listagem de pessoas"),
+            actions: [
+              DropdownButton<TiposFiltros>(
+                items:TiposFiltros.values.map((value) {
+                      return DropdownMenuItem<TiposFiltros>(
+                        value: value,
+                        child: Text(value.name.toString()),
+                      );
+                }).toList(),
+                hint: Text(p.filtroSelecionado.name.toString()),
+                value: p.filtroSelecionado,
+                onChanged: (selecao) {
+                  p.definirFiltroSelecionado(selecao!);
+                  p.alterarListaPessoas(p.filtroSelecionado);
                 },
               ),
-            ),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: ListView.builder(
+            itemCount: p._listaDePessoas.length,
+            itemBuilder: (context, indice) {
+
+
+              return ListTile(
+                title: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: Colors.white, width: 3),
+                          bottom: BorderSide(color: Colors.white, width: 3),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                      child:
+                      p.exibirPessoa(p.pessoas[indice], p),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

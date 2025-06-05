@@ -29,5 +29,3 @@ O aplicativo precisa ser dividido entre 5 telas:
 Tela inicial (com botoes que direcione para as demais telas)
 Tela de listagem de pessoas (filtro deve ser nessa tela)
 Tela de inclusão e edição de pessoas
-
-Para desenvolver esse aplicativo, utilize o código base fornecido abaixo, implementando um Provider para compartilhar o estado da lista de pessoas entre as telas solicitadas.
