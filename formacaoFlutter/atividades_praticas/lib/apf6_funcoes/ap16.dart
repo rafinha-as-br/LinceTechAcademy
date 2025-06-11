@@ -62,6 +62,7 @@ class EstadoListaDePessoas with ChangeNotifier {
   List<Pessoa> get pessoasOriginal => List.unmodifiable(_listaDePessoasOriginal);
 
 
+
   void incluir(Pessoa pessoa) {
     _listaDePessoasOriginal.add(pessoa);
     notifyListeners();
@@ -103,48 +104,64 @@ class EstadoListaDePessoas with ChangeNotifier {
   }
 
   //função que exibe uma pessoa
-  Column exibirPessoa(Pessoa pessoa, EstadoListaDePessoas p) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text('Nome: ${pessoa.nome} ', style: TextStyle(fontSize: 20)),
-          ],
-        ),
-        Row(
-          children: [
-            Text('Gmail: ${pessoa.email}', style: TextStyle(fontSize: 20)),
-          ],
-        ),
-        Row(
-          children: [
-            Text(
-              'Telefone: ${pessoa.telefone}',
-              style: TextStyle(fontSize: 20),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Text('GitHub: ${pessoa.github}', style: TextStyle(fontSize: 20)),
-          ],
-        ),
-        Row(
-          children: [
-            Text('Tipo sanguíneo: ', style: TextStyle(fontSize: 20)),
-            Text(
-              '${pessoa.tipoSanguineo.name}',
-              style: TextStyle(
-                fontSize: 20,
-                color: p.selecionaCor(pessoa.tipoSanguineo),
+  InkWell exibirPessoa(Pessoa pessoa, EstadoListaDePessoas p, bool bloqueadorOnTap) {
+    return InkWell(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text('Nome: ${pessoa.nome} ', style: TextStyle(fontSize: 20)),
+            ],
+          ),
+          Row(
+            children: [
+              Text('Gmail: ${pessoa.email}', style: TextStyle(fontSize: 20)),
+            ],
+          ),
+          Row(
+            children: [
+              Text(
+                'Telefone: ${pessoa.telefone}',
+                style: TextStyle(fontSize: 20),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+          Row(
+            children: [
+              Text('GitHub: ${pessoa.github}', style: TextStyle(fontSize: 20)),
+            ],
+          ),
+          Row(
+            children: [
+              Text('Tipo sanguíneo: ', style: TextStyle(fontSize: 20)),
+              Text(
+                '${pessoa.tipoSanguineo.name}',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: p.selecionaCor(pessoa.tipoSanguineo),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      onTap: (){
+        if(bloqueadorOnTap==false){
+          //abrir uma tela com um formulário já preenchido com os atuais dados e é só alterar os dados e depois salvar que ele atualiza essa pessoa
+          // vai v
+        }
+      },
     );
   }
 
+  void editarPessoa(){}
+
+  //função que recarrega a lista editável
+  void resetaListaPessoas(){
+    pessoas.clear();
+    pessoas.addAll(pessoasOriginal);
+    notifyListeners();
+  }
 
 
   //função que define qual é o tipo de filtro selecionado no dropButton
@@ -339,6 +356,8 @@ class TelaListagemPessoas extends StatelessWidget {
             itemCount: p._listaDePessoas.length,
             itemBuilder: (context, indice) {
 
+              //resetando a lista usada para o filtro
+              p.resetaListaPessoas();
 
               return ListTile(
                 title: Column(
@@ -355,7 +374,7 @@ class TelaListagemPessoas extends StatelessWidget {
                         vertical: 16,
                       ),
                       child:
-                      p.exibirPessoa(p.pessoas[indice], p),
+                      p.exibirPessoa(p.pessoas[indice], p, true),
                     ),
                   ],
                 ),
@@ -480,8 +499,22 @@ class TelaInclusao extends StatelessWidget {
 class TelaEdicao extends StatelessWidget {
   const TelaEdicao({super.key});
 
+  static const routeName = '/telaEdicaoPessoas';
+
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Consumer<EstadoListaDePessoas>(
+        builder: (context, p, child) =>
+            Scaffold(
+              appBar: AppBar(
+                title: Text('Edição de pessoas'),
+              ),
+              body: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: ListView.builder(itemBuilder: ),
+              ),
+            )
+    );
   }
 }
