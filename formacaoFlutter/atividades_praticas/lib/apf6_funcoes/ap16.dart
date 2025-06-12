@@ -23,11 +23,7 @@ enum TipoSanguineo {
   abNegativo,
 }
 
-enum TiposFiltros{
-  nenhum,
-  inverso,
-  tipoSanguineos
-}
+enum TiposFiltros { nenhum, inverso, tipoSanguineos }
 
 class Pessoa {
   const Pessoa({
@@ -56,12 +52,14 @@ class EstadoListaDePessoas with ChangeNotifier {
   TiposFiltros filtroSelecionado = TiposFiltros.nenhum;
   TipoSanguineo? _tipoSanguineo;
 
+  bool editandoPessoa = false;
+
   TipoSanguineo? get tipoSelecionado => _tipoSanguineo;
 
   List<Pessoa> get pessoas => List.unmodifiable(_listaDePessoas);
-  List<Pessoa> get pessoasOriginal => List.unmodifiable(_listaDePessoasOriginal);
 
-
+  List<Pessoa> get pessoasOriginal =>
+      List.unmodifiable(_listaDePessoasOriginal);
 
   void incluir(Pessoa pessoa) {
     _listaDePessoasOriginal.add(pessoa);
@@ -104,7 +102,12 @@ class EstadoListaDePessoas with ChangeNotifier {
   }
 
   //função que exibe uma pessoa
-  InkWell exibirPessoa(Pessoa pessoa, EstadoListaDePessoas p, bool bloqueadorOnTap) {
+  InkWell exibirPessoa(
+    Pessoa pessoa,
+    EstadoListaDePessoas p,
+    bool bloqueadorOnTap,
+    BuildContext context,
+  ) {
     return InkWell(
       child: Column(
         children: [
@@ -145,24 +148,28 @@ class EstadoListaDePessoas with ChangeNotifier {
           ),
         ],
       ),
-      onTap: (){
-        if(bloqueadorOnTap==false){
+      onTap: () {
+        if (bloqueadorOnTap == false) {
           //abrir uma tela com um formulário já preenchido com os atuais dados e é só alterar os dados e depois salvar que ele atualiza essa pessoa
-          // vai v
+          p.editandoPessoa = true;
+          Navigator.pushNamed(
+            context,
+            TelaInclusao.routeName,
+            arguments: pessoa,
+          );
         }
       },
     );
   }
 
-  void editarPessoa(){}
+  void editarPessoa() {}
 
   //função que recarrega a lista editável
-  void resetaListaPessoas(){
+  void resetaListaPessoas() {
     pessoas.clear();
     pessoas.addAll(pessoasOriginal);
     notifyListeners();
   }
-
 
   //função que define qual é o tipo de filtro selecionado no dropButton
   void definirFiltroSelecionado(TiposFiltros novoValor) {
@@ -185,17 +192,17 @@ class EstadoListaDePessoas with ChangeNotifier {
 
     final listaOrdenada = List<Pessoa>.from(_listaDePessoasOriginal);
     listaOrdenada.sort((a, b) {
-      return ordemPrioritaria[a.tipoSanguineo]!
-          .compareTo(ordemPrioritaria[b.tipoSanguineo]!);
+      return ordemPrioritaria[a.tipoSanguineo]!.compareTo(
+        ordemPrioritaria[b.tipoSanguineo]!,
+      );
     });
 
     return listaOrdenada;
   }
 
-
- // função que altera a lista
-  void alterarListaPessoas(TiposFiltros filtroSelecionado){
-    switch (filtroSelecionado){
+  // função que altera a lista
+  void alterarListaPessoas(TiposFiltros filtroSelecionado) {
+    switch (filtroSelecionado) {
       case TiposFiltros.inverso:
         _listaDePessoas.clear();
         _listaDePessoas.addAll(_listaDePessoasOriginal.reversed);
@@ -213,8 +220,6 @@ class EstadoListaDePessoas with ChangeNotifier {
         break;
     }
   }
-
-
 }
 
 class MyApp extends StatelessWidget {
@@ -226,6 +231,7 @@ class MyApp extends StatelessWidget {
         _MyWidgetState.routeName: (context) => MyWidget(),
         TelaListagemPessoas.routeName: (context) => TelaListagemPessoas(),
         TelaInclusao.routeName: (context) => TelaInclusao(),
+        TelaEdicao.routeName: (context) => TelaEdicao(),
       },
 
       theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: darkBlue),
@@ -262,7 +268,8 @@ class _MyWidgetState extends State<MyWidget> {
                       onTap: () {
                         //botar função de recarregar as pessoas da lista
                         Navigator.pushNamed(
-                          context, TelaListagemPessoas.routeName,
+                          context,
+                          TelaListagemPessoas.routeName,
                         );
                       },
                       child: Container(
@@ -310,6 +317,34 @@ class _MyWidgetState extends State<MyWidget> {
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, TelaEdicao.routeName);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Editar uma pessoa',
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -330,59 +365,63 @@ class TelaListagemPessoas extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<EstadoListaDePessoas>(
       builder:
-      (context, p, child) => Scaffold(
-          appBar: AppBar(
-            title: Text("Listagem de pessoas"),
-            actions: [
-              DropdownButton<TiposFiltros>(
-                items:TiposFiltros.values.map((value) {
-                      return DropdownMenuItem<TiposFiltros>(
-                        value: value,
-                        child: Text(value.name.toString()),
-                      );
-                }).toList(),
-                hint: Text(p.filtroSelecionado.name.toString()),
-                value: p.filtroSelecionado,
-                onChanged: (selecao) {
-                  p.definirFiltroSelecionado(selecao!);
-                  p.alterarListaPessoas(p.filtroSelecionado);
+          (context, p, child) => Scaffold(
+            appBar: AppBar(
+              title: Text("Listagem de pessoas"),
+              actions: [
+                DropdownButton<TiposFiltros>(
+                  items:
+                      TiposFiltros.values.map((value) {
+                        return DropdownMenuItem<TiposFiltros>(
+                          value: value,
+                          child: Text(value.name.toString()),
+                        );
+                      }).toList(),
+                  hint: Text(p.filtroSelecionado.name.toString()),
+                  value: p.filtroSelecionado,
+                  onChanged: (selecao) {
+                    p.definirFiltroSelecionado(selecao!);
+                    p.alterarListaPessoas(p.filtroSelecionado);
+                  },
+                ),
+              ],
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: ListView.builder(
+                itemCount: p._listaDePessoas.length,
+                itemBuilder: (context, indice) {
+                  //resetando a lista usada para o filtro
+                  p.resetaListaPessoas();
+
+                  return ListTile(
+                    title: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: Colors.white, width: 3),
+                              bottom: BorderSide(color: Colors.white, width: 3),
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          child: p.exibirPessoa(
+                            p.pessoas[indice],
+                            p,
+                            true,
+                            context,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 },
               ),
-            ],
+            ),
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: ListView.builder(
-            itemCount: p._listaDePessoas.length,
-            itemBuilder: (context, indice) {
-
-              //resetando a lista usada para o filtro
-              p.resetaListaPessoas();
-
-              return ListTile(
-                title: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          top: BorderSide(color: Colors.white, width: 3),
-                          bottom: BorderSide(color: Colors.white, width: 3),
-                        ),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 16,
-                      ),
-                      child:
-                      p.exibirPessoa(p.pessoas[indice], p, true),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ),
     );
   }
 }
@@ -393,15 +432,29 @@ class TelaInclusao extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   static const routeName = '/telaInclusao';
 
-  final nomeController = TextEditingController();
-  final emailController = TextEditingController();
-  final telefoneController = TextEditingController();
-  final linkGithubController = TextEditingController();
-  final tipoSanguineoController = TextEditingController();
+  //recebendo pessoa via rota para caso de edição
+
+  var nomeController = TextEditingController();
+  var emailController = TextEditingController();
+  var telefoneController = TextEditingController();
+  var linkGithubController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    TipoSanguineo tipoSanguineo = TipoSanguineo.oPositivo;
+    final p = Provider.of<EstadoListaDePessoas>(context);
+
+    // Verifica se há argumentos e só então faz o cast
+    final args = ModalRoute.of(context)?.settings.arguments;
+    Pessoa? pessoaSelecionada = args is Pessoa ? args : null;
+
+    // Inicializa os controladores com valores padrão ou da pessoa selecionada
+    nomeController.text = pessoaSelecionada?.nome ?? '';
+    emailController.text = pessoaSelecionada?.email ?? '';
+    telefoneController.text = pessoaSelecionada?.telefone ?? '';
+    linkGithubController.text = pessoaSelecionada?.github ?? '';
+    TipoSanguineo tipoSanguineo =
+        pessoaSelecionada?.tipoSanguineo ?? TipoSanguineo.oPositivo;
+
     return Scaffold(
       appBar: AppBar(title: Text('Adicionando uma pessoa')),
       body: Consumer<EstadoListaDePessoas>(
@@ -468,23 +521,28 @@ class TelaInclusao extends StatelessWidget {
                         }
                       },
                     ),
-                    Expanded(
+                    InkWell(
+                      onTap: () {
+                        if (_formKey.currentState!.validate()) {
+                          Pessoa pessoaNova = Pessoa(
+                            nome: nomeController.text,
+                            email: emailController.text,
+                            telefone: telefoneController.text,
+                            github: linkGithubController.text,
+                            tipoSanguineo: tipoSanguineo,
+                          );
+                          if (p.editandoPessoa == true) {
+                            pessoaSelecionada = pessoaNova;
+                          } else {
+                            pessoa.incluir(pessoaNova);
+                          }
+                        }
+                      },
                       child: Container(
-                        child: InkWell(
-                          onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              Pessoa pessoaNova = Pessoa(
-                                nome: nomeController.text,
-                                email: emailController.text,
-                                telefone: telefoneController.text,
-                                github: linkGithubController.text,
-                                tipoSanguineo: tipoSanguineo,
-                              );
-                              pessoa.incluir(pessoaNova);
-                            }
-                          },
-                          child: Text('Salvar e adicionar'),
-                        ),
+                        margin: EdgeInsets.only(top: 20), // Espaço acima do botão
+                        width: double.infinity, // Largura total
+                        height: 50,
+                        child: Text('Salvar', textAlign: TextAlign.center),
                       ),
                     ),
                   ],
@@ -501,20 +559,47 @@ class TelaEdicao extends StatelessWidget {
 
   static const routeName = '/telaEdicaoPessoas';
 
-
   @override
   Widget build(BuildContext context) {
     return Consumer<EstadoListaDePessoas>(
-        builder: (context, p, child) =>
-            Scaffold(
-              appBar: AppBar(
-                title: Text('Edição de pessoas'),
+      builder:
+          (context, p, child) => Scaffold(
+            appBar: AppBar(
+              title: Text('Edição de pessoas - Selecione uma pessoa!'),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: ListView.builder(
+                itemCount: p.pessoasOriginal.length,
+                itemBuilder: (context, indice) {
+                  return ListTile(
+                    title: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: Colors.white, width: 3),
+                              bottom: BorderSide(color: Colors.white, width: 3),
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          child: p.exibirPessoa(
+                            p.pessoas[indice],
+                            p,
+                            false,
+                            context,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: ListView.builder(itemBuilder: ),
-              ),
-            )
+            ),
+          ),
     );
   }
 }
