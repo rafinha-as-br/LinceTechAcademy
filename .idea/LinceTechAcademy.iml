@@ -18,9 +18,12 @@
       <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/atividades_praticas/build" />
-      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app (uso pessoal para testes)/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app (uso pessoal para testes)/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app (uso pessoal para testes)/build" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/favoritos/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/favoritos/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/desafios/favoritos/build" />
+      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/formacaoFlutter/primeiro_app/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
