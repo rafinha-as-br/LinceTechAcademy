@@ -1,6 +1,6 @@
-### Notas do aluno
-
+Notas do aluno
 ---
+A IA ajudou a entender a importância da internacionalização, como fazê-la e dicas gerais.
 
 ### O que é internacionalização e qual sua importância?
 

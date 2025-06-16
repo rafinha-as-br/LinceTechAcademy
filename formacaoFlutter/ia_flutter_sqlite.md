@@ -1,5 +1,5 @@
 ### Notas do aluno
-
+A IA trouxe respostas diretas ao assunto, sendo muito útil ao entendimento rápido das respostas oferecidas
 ---
 
 ### O que é um banco de dados SQLite e como ele funciona em Flutter?

@@ -1,7 +1,6 @@
 ### Notas do aluno
 
----
-
+Não há notas importantes a se destacar...
 ### O que é persistência de dados em aplicativos Flutter e por que é importante?
 
 Persistência de dados é a capacidade de **gravar informações de forma permanente** (ou semi-permanente) para que continuem disponíveis depois que o app é fechado.
